@@ -4,6 +4,8 @@
 #
 # From this Stack Overflow post:
 # http://stackoverflow.com/questions/348630/how-can-i-download-all-emails-with-attachments-from-gmail
+# and
+# https://yuji.wordpress.com/2011/06/22/python-imaplib-imap-example-with-gmail/
 
 import email, getpass, imaplib, os
 
