@@ -10,6 +10,7 @@ as other emails in another directory, but with less garbage attached. Not a
 strictly necessary step, but useful so that the total size of the files we're
 working with is a bit smaller.
 
-query_email.py is there to look up the word length of emails that the 2012
-HCII cohort has sent me. Perhaps it's misnamed.
+word_counts.py is there to look up the word length of emails that the 2012
+HCII cohort has sent me. cohort_emails.txt and chart_etc.xslx are the output
+of word_counts.py.
 
