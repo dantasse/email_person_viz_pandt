@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 #
-# Script to read out some things from a directory of processed emails.
+# Script to read from a directory of processed emails, and output word
+# counts of each message per person. There's some good stuff to reuse here
+# and some one-off stuff. The output of this was a chart posted to our room's
+# bulletin board.
+#
 # Each email should be in the form:
 """
 date/time (UTC)
