@@ -2,8 +2,8 @@
 #
 # Script to read from a directory of processed emails, and output word
 # counts of each message per person. There's some good stuff to reuse here
-# and some one-off stuff. The output of this was a chart posted to our room's
-# bulletin board.
+# and some one-off stuff. The output of this was a chart posted to the bulletin
+# board outside our offices.
 #
 # Each email should be in the form:
 """
@@ -32,9 +32,9 @@ people = {'Brandon':brandon_emails, 'Nikola':nikola_emails, 'Dave': dave_emails,
           'Chris':chris_emails, 'Tati':tati_emails, 'Jenny':jenny_emails,\
           'Anthony':anthony_emails}
 
-# TODO: this is not yet perfect. Some emails, particularly long ones, have some
-# of the reply lines not starting with >'s, due to long line wrapping or
-# something. What is this, the third century? Sigh. 
+# This has been copied into generate_snippets.py
+# Further development will occur there.
+# TODO: factor out into a library
 def is_reply(line):
     line = line.strip()
     if line.startswith('>'):
@@ -53,10 +53,9 @@ def is_reply(line):
 word_counts = {'Brandon': [], 'Nikola': [], 'Dave': [], 'Chris': [], 'Tati': [],\
                'Jenny': [], 'Anthony': []}
 
-# Returns a set of lines with all the reply ones removed.
-# This is not perfect too. It's heuristics, you can see.
-# Particularly, it fails if someone replies inline. I think that's rarer in
-# this dataset than long mangled emails.
+# This has been copied into generate_snippets.py
+# Further development will occur there.
+# TODO: factor out into a library
 def remove_replies(msg_lines):
     good_lines = []
     for line in msg_lines:
@@ -85,7 +84,6 @@ for filename in os.listdir(cmu_path):
 for filename in os.listdir(gmail_path):
     get_word_counts(gmail_path + filename)
 
-print word_counts
 for person in word_counts:
     print person
     print word_counts[person]
