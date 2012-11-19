@@ -15,6 +15,7 @@ rest of the text
 """
 
 import os, random
+import email_lib
 
 cmu_path = "/Users/dantasse/Desktop/processed_emails/"
 gmail_path = "/Users/dantasse/Desktop/dantasse_processed_emails/"
@@ -31,39 +32,8 @@ anthony_emails = ['xiangchen@acm.org', 'anthony.xiangchen@gmail.com', 'xiangchen
 people = {'Brandon':brandon_emails, 'Nikola':nikola_emails, 'Dave': dave_emails,\
           'Chris':chris_emails, 'Tati':tati_emails, 'Jenny':jenny_emails,\
           'Anthony':anthony_emails}
-
-# This has been copied into generate_snippets.py
-# Further development will occur there.
-# TODO: factor out into a library
-def is_reply(line):
-    line = line.strip()
-    if line.startswith('>'):
-        return True
-    elif line.startswith('On') and line.endswith('wrote:'):
-        return True
-    elif line.startswith('Nikola Banovic <nikola@dgp.toronto.edu> wrote:'):
-        return True # I guess Toronto webmail mangles messages
-    elif line.startswith('------') and 'Forwarded message' in line:
-        return True
-    elif line.startswith('------') and 'Original Message' in line:
-        return True
-    else:
-        return False
-
 word_counts = {'Brandon': [], 'Nikola': [], 'Dave': [], 'Chris': [], 'Tati': [],\
                'Jenny': [], 'Anthony': []}
-
-# This has been copied into generate_snippets.py
-# Further development will occur there.
-# TODO: factor out into a library
-def remove_replies(msg_lines):
-    good_lines = []
-    for line in msg_lines:
-        if is_reply(line):
-            return good_lines
-        else:
-            good_lines.append(line)
-    return good_lines
 
 def get_word_counts(filepath):
     file = open(filepath, 'r')
@@ -72,8 +42,7 @@ def get_word_counts(filepath):
     for person in people:
         if from_address in people[person]:
             msg_lines = contents[4:]
-            #msg_lines_noreplies = [line for line in msg_lines if not is_reply(line)]
-            msg_lines_noreplies = remove_replies(msg_lines)
+            msg_lines_noreplies = email_lib.remove_replies(msg_lines)
             words = ''.join(msg_lines_noreplies).split()
             word_counts[person].append(len(words))
             if len(words) > 250:
