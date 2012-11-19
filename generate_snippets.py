@@ -14,6 +14,7 @@ rest of the text
 import argparse, datetime, os, random
 import nltk.data
 import email_lib
+import pickle
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
     snippets, given email between you and another person.')
@@ -57,7 +58,12 @@ def is_email_valid(email):
 def remove_trn(s):                                                              
     return s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
 
-sentence_segmenter = nltk.data.load('tokenizers/punkt/english.pickle')
+segmenter_file = open('english.pickle', 'r')
+sentence_segmenter = pickle.Unpickler(segmenter_file).load()
+# Another way to get the sentence_segmenter (and probably more official) is to
+# download it from nltk's data downloader (nltk.org/data.html), and then call:
+# sentence_segmenter = nltk.data.load('tokenizers/punkt/english.pickle')
+
 key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo']
 # Returns a list of string snippets (a "snippet" is a potentially-meaningful
 # sentence). TODO maybe snippets should be >1 sentence.

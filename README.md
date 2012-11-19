@@ -6,16 +6,16 @@ some hopefully-meaningful statements.
 
         python --version
 If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff might still work, but this was written in 2.7.)
-2. Install NLTK (Natural Language Toolkit): Go to http://pypi.python.org/pypi/nltk/2.0.4, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
+2. Install NLTK (Natural Language Toolkit): Go to `http://pypi.python.org/pypi/nltk/2.0.4`, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
 
         sudo python setup.py install
-3. Get the Punkt tokenizer; this is the bit that can split text into sentences neatly. To do so, at a terminal:
+<!--3. Get the Punkt tokenizer; this is the bit that can split text into sentences neatly. To do so, at a terminal:
 
         python
         import nltk
         nltk.download()
-Now you'll see a window pop up; navigate to "Models" then select Punkt and download.
-4. Get all of the code for this project. I assume you're on the github page now; if not, go to https://github.com/dantasse/email_person_viz_pandt. Clone the github repository, or just go for the zip link (on github, button right above the "email\_person\_viz\_pandt" title bit) and unzip it.
+Now you'll see a window pop up; navigate to "Models" then select Punkt and download.-->
+4. Get all of the code for this project. I assume you're on the github page now; if not, go to `https://github.com/dantasse/email_person_viz_pandt`. Clone the github repository, or just go for the zip link (on github, button right above the "email\_person\_viz\_pandt" title bit) and unzip it.
 5. Navigate to the folder where you downloaded it, in a terminal.
 6. Run:
 
@@ -66,4 +66,8 @@ directory for other python files in "import" statements; don't worry about it.
 word\_counts.py is there to look up the word length of emails that the 2012
 HCII cohort has sent me. cohort\_emails.txt and chart\_etc.xslx are the output
 of word\_counts.py.
+
+### Credits:
+english.pickle is the English sentence segmenter from Punkt, included in NLTK,
+which is amazing. More info: `http://nltk.org/`
 
