@@ -12,7 +12,6 @@ rest of the text
 """
 
 import argparse, datetime, os, random
-import nltk.data
 import email_lib
 import pickle
 

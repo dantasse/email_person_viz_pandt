@@ -6,9 +6,9 @@ some hopefully-meaningful statements.
 
         python --version
 If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff might still work, but this was written in 2.7.)
-2. Install NLTK (Natural Language Toolkit): Go to `http://pypi.python.org/pypi/nltk/2.0.4`, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
+<!--2. Install NLTK (Natural Language Toolkit): Go to `http://pypi.python.org/pypi/nltk/2.0.4`, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
 
-        sudo python setup.py install
+        sudo python setup.py install-->
 <!--3. Get the Punkt tokenizer; this is the bit that can split text into sentences neatly. To do so, at a terminal:
 
         python
