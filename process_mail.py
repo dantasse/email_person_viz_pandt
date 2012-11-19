@@ -17,6 +17,7 @@ Message text (all the rest of the lines too)
 # TODO should this just be combined with get_mail? Probably?
 
 import argparse, datetime, email, os, time
+import email_lib
 
 parser = argparse.ArgumentParser(description='Processes your email to remove\
     all the extra garbage we don\'t need.')
@@ -71,7 +72,7 @@ for filename in os.listdir(args.raw_email_path):
     text = get_first_text_block(msg)
 
     outfile = open(args.output_path + filename, 'w')
-    outfile.write(str(utc_date) + '\n')
+    outfile.write(utc_date.strftime(email_lib.DATE_TIME_FORMAT) + '\n')
     outfile.write(from_addr + '\n')
     outfile.write(str(to_addrs) + '\n')
     outfile.write(str(cc_addrs) + '\n')

@@ -11,9 +11,8 @@ cc addresses
 rest of the text
 """
 
-import argparse, datetime, os, random
+import argparse, datetime, os, pickle, random
 import email_lib
-import pickle
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
     snippets, given email between you and another person.')
@@ -37,8 +36,8 @@ parser.add_argument('-n', '--num_snippets', type=int, default=1,
     help='the number of snippets to get')
 
 args = parser.parse_args()
-start_date = datetime.datetime.strptime(args.start_date, '%Y-%m-%d')
-end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')\
+start_date = datetime.datetime.strptime(args.start_date, email_lib.DATE_FORMAT)
+end_date = datetime.datetime.strptime(args.end_date, email_lib.DATE_FORMAT)\
     + datetime.timedelta(days=1)
 # Adding a day to facilitate comparisons. This is creating a date at 00:00:00,
 # so if end date is May 3, let's compare to the first second of May 4, not the
