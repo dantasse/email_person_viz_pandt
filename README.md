@@ -15,7 +15,7 @@ If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff
         import nltk
         nltk.download()
 Now you'll see a window pop up; navigate to "Models" then select Punkt and download.
-4. Get all of the code for this project. I assume you're on the github page now; if not, go to https://github.com/dantasse/email\_person\_viz\_pandt. Clone the github repository, or just go for the zip link (on github, button right above the "email\_person\_viz\_pandt" title bit) and unzip it.
+4. Get all of the code for this project. I assume you're on the github page now; if not, go to https://github.com/dantasse/email_person_viz_pandt. Clone the github repository, or just go for the zip link (on github, button right above the "email\_person\_viz\_pandt" title bit) and unzip it.
 5. Navigate to the folder where you downloaded it, in a terminal.
 6. Run:
 
