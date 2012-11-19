@@ -12,6 +12,7 @@ rest of the text
 """
 
 import argparse, datetime, os, random
+import nltk.data
 import email_lib
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
@@ -43,7 +44,8 @@ end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')\
 # so if end date is May 3, let's compare to the first second of May 4, not the
 # first second of May 3.
 
-def is_email_good(email):
+# Returns whether the email should even be considered as a possible candidate
+def is_email_valid(email):
     is_right_people =\
         (args.person == email.from_address and args.me in email.to_addresses) or\
         (args.person in email.to_addresses and args.me == email.from_address)
@@ -52,10 +54,28 @@ def is_email_good(email):
     is_date_okay = email.date >= start_date and email.date <= end_date
     return is_right_people and is_date_okay
 
-count = 0
+def remove_trn(s):                                                              
+    return s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+
+sentence_segmenter = nltk.data.load('tokenizers/punkt/english.pickle')
+key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo']
+# Returns a list of string snippets (a "snippet" is a potentially-meaningful
+# sentence). TODO maybe snippets should be >1 sentence.
+def get_snippets(email):
+    snippets = []
+    text_no_newlines = remove_trn(email.text)
+    sentences = sentence_segmenter.tokenize(text_no_newlines)
+    for sentence in sentences:
+        #TODO all we've got here is the keyword matcher, add more ways to pick
+        # out snippets
+        for key_word in key_words:
+             if key_word in sentence.lower():
+                 snippets.append(sentence)
+    return snippets
+ 
 for filename in os.listdir(args.emails_path):
     e1 = email_lib.read_email(args.emails_path + filename)
-    if is_email_good(e1):
-        count += 1
-print count
+    if is_email_valid(e1):
+        for snippet in get_snippets(e1):
+            print snippet
 

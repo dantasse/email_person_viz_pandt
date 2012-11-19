@@ -7,7 +7,12 @@
 # and
 # https://yuji.wordpress.com/2011/06/22/python-imaplib-imap-example-with-gmail/
 
-import email, getpass, imaplib, os
+import argparse, email, getpass, imaplib, os
+
+parser = argparse.ArgumentParser(description='Downloads all your email.')
+parser.add_argument('path', help='Directory to save all your emails to.\
+                                  Ending with a /')
+args = parser.parse_args()
 
 detach_dir = '.' # directory where to save attachments (default: current)
 print "This application will attempt to save all your gmail to files. \
@@ -23,18 +28,19 @@ m.select("[Gmail]/All Mail") # here you a can choose a mail box like INBOX inste
 
 resp, items = m.search(None, "ALL") # you could filter using the IMAP rules here (check http://www.example-code.com/csharp/imap-search-critera.asp)
 items = items[0].split() # getting the mails id
-print "Got this many items"
-print len(items)
+print "Number of emails to download: " + str(len(items))
 
 # let's save them each to a file so we don't have to keep asking gmail
 email_id = 0
 for emailid in items:
     resp, data = m.fetch(emailid, "(RFC822)") # fetching the mail, "`(RFC822)`" means "get the whole stuff", but you can ask for headers only, etc
     email_body = data[0][1]
-    output_file = open('/Users/dtasse/Desktop/emails/email_' + str(email_id) + '.txt', 'w')
+    output_file = open(args.path + 'email_' + str(email_id) + '.txt', 'w')
     email_id += 1
     output_file.write(email_body)
     output_file.close()
+    if (email_id % 100 == 0):
+        print 'This many messages downloaded: ' + str(email_id)
     # email_message = email.message_from_string(email_body) # parsing the mail content to get a mail object
     # print email_message['To']
 """
