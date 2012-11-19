@@ -12,6 +12,7 @@ rest of the text
 """
 
 import argparse, datetime, os, random
+import email_lib
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
     snippets, given email between you and another person.')
@@ -42,37 +43,6 @@ end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')\
 # so if end date is May 3, let's compare to the first second of May 4, not the
 # first second of May 3.
 
-# TODO: this is not yet perfect. Some emails, particularly long ones, have some
-# of the reply lines not starting with >'s, due to long line wrapping or
-# something. What is this, the third century? Sigh. 
-# TODO factor out into library
-def is_reply(line):
-    line = line.strip()
-    if line.startswith('>'):
-        return True
-    elif line.startswith('On') and line.endswith('wrote:'):
-        return True
-    elif line.startswith('------') and 'Forwarded message' in line:
-        return True
-    elif line.startswith('------') and 'Original Message' in line:
-        return True
-    else:
-        return False
-
-# Returns a set of lines with all the reply ones removed.
-# This is not perfect too. It's heuristics, you can see.
-# Particularly, it fails if someone replies inline. I think that's rarer in
-# this dataset than long mangled emails.
-# TODO factor out into library
-def remove_replies(msg_lines):
-    good_lines = []
-    for line in msg_lines:
-        if is_reply(line):
-            return good_lines
-        else:
-            good_lines.append(line)
-    return good_lines
-
 class email:
     """ represents an email """
     def __init__(self, date, from_address, to_addresses, cc_addresses, text):
@@ -94,7 +64,7 @@ def read_email(filepath):
     to_addresses = eval(contents[2].strip())
     cc_addresses = eval(contents[3].strip())
     msg_lines = contents[4:]
-    msg_lines_noreplies = remove_replies(msg_lines)
+    msg_lines_noreplies = email_lib.remove_replies(msg_lines)
     msg_text = ''.join(msg_lines_noreplies)
 
     return email(date, from_address, to_addresses, cc_addresses, msg_text)
