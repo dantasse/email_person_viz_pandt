@@ -43,32 +43,6 @@ end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')\
 # so if end date is May 3, let's compare to the first second of May 4, not the
 # first second of May 3.
 
-class email:
-    """ represents an email """
-    def __init__(self, date, from_address, to_addresses, cc_addresses, text):
-        self.date = date
-        self.from_address = from_address
-        self.to_addresses = to_addresses
-        self.cc_addresses = cc_addresses
-        self.text = text
-
-def read_email(filepath):
-    file = open(filepath, 'r')
-    contents = file.readlines()
-    date_string = contents[0].strip()
-    #TODO: I never specified that the string should be in this format when
-    # it is written to the file in the first place. I should do that.
-    date = datetime.datetime.strptime(date_string, '%Y-%m-%d %H:%M:%S')
-    from_address = contents[1].strip()
-    # note that we expect to_addresses to be safe
-    to_addresses = eval(contents[2].strip())
-    cc_addresses = eval(contents[3].strip())
-    msg_lines = contents[4:]
-    msg_lines_noreplies = email_lib.remove_replies(msg_lines)
-    msg_text = ''.join(msg_lines_noreplies)
-
-    return email(date, from_address, to_addresses, cc_addresses, msg_text)
- 
 def is_email_good(email):
     is_right_people =\
         (args.person == email.from_address and args.me in email.to_addresses) or\
@@ -80,7 +54,7 @@ def is_email_good(email):
 
 count = 0
 for filename in os.listdir(args.emails_path):
-    e1 = read_email(args.emails_path + filename)
+    e1 = email_lib.read_email(args.emails_path + filename)
     if is_email_good(e1):
         count += 1
 print count

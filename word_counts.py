@@ -35,6 +35,7 @@ people = {'Brandon':brandon_emails, 'Nikola':nikola_emails, 'Dave': dave_emails,
 word_counts = {'Brandon': [], 'Nikola': [], 'Dave': [], 'Chris': [], 'Tati': [],\
                'Jenny': [], 'Anthony': []}
 
+# TODO if I ever use this again, refactor to use email_lib.read_email
 def get_word_counts(filepath):
     file = open(filepath, 'r')
     contents = file.readlines()
