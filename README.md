@@ -22,14 +22,14 @@ And then whenever you want to update the code (e.g. when we add more rules) you 
  
         git pull
 And you'll be up to date. On the other hand, if you don't want to, or if you don't have git installed and don't want to install it, you can just do Option 2: download <https://github.com/dantasse/email_person_viz_pandt/archive/master.zip> and unzip it.
-5. Navigate to the folder where you downloaded it, in a terminal.
+5. Navigate to the folder where you downloaded/cloned it, in a terminal.
 6. Run:
 
         ./get_mail.py (path)
 where (path) is an existing directory where you want to save all your emails. For example:
 
         ./get_mail.py /Users/dtasse/Desktop/emails/
-(be sure to create that directory first.) This script will ask you for your gmail username and password, then it'll just download them all. If you use 2-factor, you'll need an app-specific password for this; if this sentence makes no sense to you then just ignore it (and ask Dan about why 2-factor is cool and you should probably do it, but that's unrelated to this project). It'll take a while (a number of minutes up to hours, depending on how much mail you have).
+(be sure to create that directory first.) This script will ask you for your gmail username and password, then it'll just download them all. If you use 2-factor, you'll need an app-specific password for this; if this sentence makes no sense to you then just ignore it (and ask Dan about why 2-factor is cool and you should probably do it, but that's unrelated to this project). It'll take a while (probably about 20 minutes per 10,000 messages).
 7. Run:
 
         ./process_mail.py (raw_email_path) (output_path)
@@ -68,10 +68,6 @@ email\_lib.py: some functions that are called from other scripts.
 
 \_\_init\_\_.py is just a marker that tells python it's okay to look in this
 directory for other python files in "import" statements; don't worry about it.
-
-word\_counts.py is there to look up the word length of emails that the 2012
-HCII cohort has sent me. cohort\_emails.txt and chart\_etc.xslx are the output
-of word\_counts.py.
 
 ### Credits:
 english.pickle is the English sentence segmenter from Punkt, included in NLTK,
