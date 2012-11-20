@@ -15,8 +15,9 @@ parser.add_argument('path', help='Directory to save all your emails to.\
 args = parser.parse_args()
 
 detach_dir = '.' # directory where to save attachments (default: current)
-print "This application will attempt to save all your gmail to files. \
-    If this is not what you want, quit now with ctrl-c." 
+print "This application will attempt to save all your gmail to files.\
+ IT WILL ALSO MARK ALL OF YOUR EMAIL AS READ.\
+ If this is not what you want, quit now with ctrl-c." 
 user = raw_input("Enter your GMail username:")
 pwd = getpass.getpass("Enter your password: ")
 
