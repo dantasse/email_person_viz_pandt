@@ -6,9 +6,9 @@ some hopefully-meaningful statements.
 
         python --version
 If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff might still work, but this was written in 2.7.)
-<!--2. Install NLTK (Natural Language Toolkit): Go to <http://pypi.python.org/pypi/nltk/2.0.4>, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
+2. Install NLTK (Natural Language Toolkit): Go to <http://pypi.python.org/pypi/nltk/2.0.4>, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
 
-        sudo python setup.py install-->
+        sudo python setup.py install
 <!--3. Get the Punkt tokenizer; this is the bit that can split text into sentences neatly. To do so, at a terminal:
 
         python
@@ -17,12 +17,13 @@ If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff
 Now you'll see a window pop up; navigate to "Models" then select Punkt and download.-->
 4. Get all of the code for this project. I assume you're on the github page now; if not, go to <https://github.com/dantasse/email_person_viz_pandt>. Clone the github repository, or just go for the zip link (on github, button right above the "email\_person\_viz\_pandt" title bit) and unzip it.
 5. Navigate to the folder where you downloaded it, in a terminal.
-6. Run:
+6. Read this full step, then run:
 
         ./get_mail.py (path)
 where (path) is an existing directory where you want to save all your emails. For example:
 
         ./get_mail.py /Users/dtasse/Desktop/emails/
+Note that *THIS STEP WILL MARK ALL YOUR EMAIL AS READ.* If that's okay with you, continue reading. If not, if you need some email to remain unread, wait until Dan fixes this.
 (be sure to create that directory first.) This script will ask you for your gmail username and password, then it'll just download them all. If you use 2-factor, you'll need an app-specific password for this; if this sentence makes no sense to you then just ignore it (and ask Dan about why 2-factor is cool and you should probably do it, but that's unrelated to this project). It'll take a while (a number of minutes up to hours, depending on how much mail you have).
 7. Run:
 
