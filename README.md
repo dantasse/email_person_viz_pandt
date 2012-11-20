@@ -15,7 +15,13 @@ If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff
         import nltk
         nltk.download()
 Now you'll see a window pop up; navigate to "Models" then select Punkt and download.-->
-4. Get all of the code for this project. I assume you're on the github page now; if not, go to <https://github.com/dantasse/email_person_viz_pandt>. Clone the github repository, or just go for the zip link (on github, button right above the "email\_person\_viz\_pandt" title bit) and unzip it.
+4. Get all of the code for this project. Two options: First, you can run:
+
+        git clone https://github.com/dantasse/email_person_viz_pandt.git
+And then whenever you want to update the code (e.g. when we add more rules) you can just go to that same directory and then run:
+ 
+        git pull
+And you'll be up to date. On the other hand, if you don't want to, or if you don't have git installed and don't want to install it, you can just do Option 2: go to <https://github.com/dantasse/email_person_viz_pandt>, go for the zip link (on github, button right above the "email\_person\_viz\_pandt" title bit) and unzip it.
 5. Navigate to the folder where you downloaded it, in a terminal.
 6. Run:
 
