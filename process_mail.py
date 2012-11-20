@@ -67,7 +67,8 @@ for filename in os.listdir(args.raw_email_path):
     if date_tuple:
         utc_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
     else:
-        print "error parsing date: " + msg['date']
+        print "error parsing date in file: " + filename
+        continue
 
     text = get_first_text_block(msg)
 
