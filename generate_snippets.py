@@ -34,8 +34,12 @@ parser.add_argument('-p', '--emails_path',
     help='the path to the directory with all the emails')
 parser.add_argument('-n', '--num_snippets', type=int, default=1,
     help='the number of snippets to get')
+parser.add_argument('--use_keyword', action='store_true',
+    help='if set, use keyword matching (like "love") to find snippets')
+
 
 args = parser.parse_args()
+
 start_date = datetime.datetime.strptime(args.start_date, email_lib.DATE_FORMAT)
 end_date = datetime.datetime.strptime(args.end_date, email_lib.DATE_FORMAT)\
     + datetime.timedelta(days=1)
@@ -62,7 +66,7 @@ sentence_segmenter = pickle.Unpickler(segmenter_file).load()
 # download it from nltk's data downloader (nltk.org/data.html), and then call:
 # sentence_segmenter = nltk.data.load('tokenizers/punkt/english.pickle')
 
-key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo']
+key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
 # Returns a list of string snippets (a "snippet" is a potentially-meaningful
 # sentence). TODO maybe snippets should be >1 sentence.
 def get_snippets(email):
@@ -72,14 +76,23 @@ def get_snippets(email):
     for sentence in sentences:
         #TODO all we've got here is the keyword matcher, add more ways to pick
         # out snippets
-        for key_word in key_words:
-             if key_word in sentence.lower():
-                 snippets.append(sentence)
+        if args.use_keyword:
+            for key_word in key_words:
+                 if key_word in sentence.lower():
+                     snippets.append(sentence)
     return snippets
  
+all_snippets = []
 for filename in os.listdir(args.emails_path):
     e1 = email_lib.read_email(args.emails_path + filename)
     if is_email_valid(e1):
         for snippet in get_snippets(e1):
-            print snippet
+            all_snippets.append(snippet)
+
+for snippet in all_snippets:
+    print snippet
+
+if len(all_snippets) == 0:
+    print "No snippets. Did you forget to add some ways to pick out " +\
+          "snippets? Try ./generate_snippets -h for details."
 
