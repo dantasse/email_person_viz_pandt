@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 #
 # Script to get a few "meaningful" snippets out of email, given a person.
-#
-# Each email should be in the form:
 """
 date/time (UTC)
 from address
@@ -12,7 +10,7 @@ rest of the text
 """
 
 import argparse, datetime, os, pickle, random
-import email_lib
+import email_lib, tfidf
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
     snippets, given email between you and another person.')
@@ -36,6 +34,9 @@ parser.add_argument('-n', '--num_snippets', type=int, default=1,
     help='the number of snippets to get')
 parser.add_argument('--use_keyword', action='store_true',
     help='if set, use keyword matching (like "love") to find snippets')
+parser.add_argument('--use_tfidf', action='store_true',
+    help='if set, use TF-IDF algorithm to pick snippets based on words that ' +
+         'you use with that person more than most people')
 
 
 args = parser.parse_args()
@@ -66,6 +67,11 @@ sentence_segmenter = pickle.Unpickler(segmenter_file).load()
 # download it from nltk's data downloader (nltk.org/data.html), and then call:
 # sentence_segmenter = nltk.data.load('tokenizers/punkt/english.pickle')
 
+
+if args.use_tfidf:
+    tfidf_words = [word_score[0] for word_score in\
+        tfidf.get_unusual_words(args.emails_path, args.me, args.person)[0:10]]
+
 key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
 # Returns a list of string snippets (a "snippet" is a potentially-meaningful
 # sentence). TODO maybe snippets should be >1 sentence.
@@ -74,12 +80,19 @@ def get_snippets(email):
     text_no_newlines = remove_trn(email.text)
     sentences = sentence_segmenter.tokenize(text_no_newlines)
     for sentence in sentences:
+        sentence_good = False
         #TODO all we've got here is the keyword matcher, add more ways to pick
         # out snippets
         if args.use_keyword:
             for key_word in key_words:
-                 if key_word in sentence.lower():
-                     snippets.append(sentence)
+                if key_word in sentence.lower():
+                    sentence_good = True
+        if args.use_tfidf:
+            for tfidf_word in tfidf_words:
+                if tfidf_word in sentence.lower(): #TODO: this is probably not formatted the same, right?
+                    sentence_good = True
+        if sentence_good:
+            snippets.append(sentence)
     return snippets
  
 all_snippets = []

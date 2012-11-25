@@ -50,11 +50,12 @@ def get_doc_frequencies(person_email_texts):
                 doc_frequencies[word] += 1
     return doc_frequencies
 
-emails = read_all_files('/Users/dtasse/Desktop/processed_emails/')
 
+# |emails_path| is the path to all the email files.
 # |you| is your email address, |other| is the other person's
 # returns a list of (word, tfidf score) tuples, sorted by score, highest first
-def get_unusual_words(you, other):
+def get_unusual_words(emails_path, you, other):
+    emails = read_all_files(emails_path)
     person_email_texts = texts_by_person(emails, you)
     doc_frequencies = get_doc_frequencies(person_email_texts)
     term_frequencies = defaultdict(int)
@@ -62,10 +63,11 @@ def get_unusual_words(you, other):
         for word in email.split():
             if len(word) < 50: #TODO fix this better
                 term_frequencies[remove_punct(word.lower())] += 1
-        tfidf = {}
-        for word in term_frequencies:
-            tfidf[word] = term_frequencies[word] * 1.0 / doc_frequencies[word]
+    tfidf = {}
+    for word in term_frequencies:
+        tfidf[word] = term_frequencies[word] * 1.0 / doc_frequencies[word]
     retval = sorted(tfidf.items(), key=lambda x: x[1])
+    print retval
     retval.reverse()
     return retval
 

@@ -14,7 +14,8 @@ Message text (all the rest of the lines too)
 # Some details from:
 # https://yuji.wordpress.com/2011/06/22/python-imaplib-imap-example-with-gmail/
 #
-# TODO should this just be combined with get_mail? Probably?
+# TODO fix a lot of weird errors that show up in emails! First of all, there's
+# a lot of "=20" or "=\n" etc that show up.
 
 import argparse, datetime, email, os, time
 import email_lib
