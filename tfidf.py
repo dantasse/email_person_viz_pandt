@@ -25,6 +25,19 @@ def remove_trn(s):
 def remove_punct(s):
     return s.strip(string.punctuation)
 
+# some words are okay to have in emails but are definitely not meaningful.
+# for example: "http://www.google.com".
+def is_valid_tfidf_word(word):
+    if len(word) > 50:
+        return False
+    elif word.startswith('http'):
+        return False
+    else:
+        return True
+
+def normalize_word(word):
+    return remove_punct(word.lower())
+
 # returns a map of {email_address: list of texts of emails between
 # |your_address| and that person}
 def texts_by_person(emails, your_address):
@@ -45,9 +58,8 @@ def get_doc_frequencies(person_email_texts):
         emails = ' '.join(person_email_texts[person])
         # emails.split() is all the words this person has said
         for word in set(emails.split()):
-            if len(word) < 50: # get rid of some garbage, TODO fix this better
-                word = remove_punct(word.lower())
-                doc_frequencies[word] += 1
+            if is_valid_tfidf_word(word):
+                doc_frequencies[normalize_word(word)] += 1
     return doc_frequencies
 
 
@@ -61,8 +73,8 @@ def get_unusual_words(emails_path, you, other):
     term_frequencies = defaultdict(int)
     for email in person_email_texts[other]:
         for word in email.split():
-            if len(word) < 50: #TODO fix this better
-                term_frequencies[remove_punct(word.lower())] += 1
+            if is_valid_tfidf_word(word):
+                term_frequencies[normalize_word(word)] += 1
     tfidf = {}
     for word in term_frequencies:
         tfidf[word] = term_frequencies[word] * 1.0 / doc_frequencies[word]

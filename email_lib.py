@@ -16,6 +16,14 @@ class email:
         self.cc_addresses = cc_addresses
         self.text = text
 
+class snippet:
+    """ represents a hopefully-meaningful snippet of text and the email that
+        it is in. """
+    def __init__(self, snippet, from_address, email_text, long_snippet):
+        self.snippet = snippet
+        self.from_address = from_address
+        self.email_text = email_text
+        self.long_snippet = long_snippet
 
 # TODO: this is not yet perfect. Some emails, particularly long ones, have some
 # of the reply lines not starting with >'s, due to long line wrapping or
@@ -26,9 +34,9 @@ def is_reply(line):
         return True
     elif line.startswith('On') and line.endswith('wrote:'):
         return True
-    elif line.startswith('------') and 'Forwarded message' in line:
+    elif line.startswith('------') and 'forwarded message' in line.lower():
         return True
-    elif line.startswith('------') and 'Original Message' in line:
+    elif line.startswith('------') and 'original message' in line.lower():
         return True
     else:
         return False

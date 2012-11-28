@@ -17,7 +17,7 @@ Message text (all the rest of the lines too)
 # TODO fix a lot of weird errors that show up in emails! First of all, there's
 # a lot of "=20" or "=\n" etc that show up.
 
-import argparse, datetime, email, os, time
+import argparse, datetime, email, os, quopri, re, time
 import email_lib
 
 parser = argparse.ArgumentParser(description='Processes your email to remove\
@@ -71,14 +71,18 @@ for filename in os.listdir(args.raw_email_path):
         print "error parsing date in file: " + filename
         continue
 
+    # TODO get the subject line
+
     text = get_first_text_block(msg)
+    text = quopri.decodestring(str(text)) # fixes "=20" etc
+    text = re.sub('<http:.*>', '', text) # Strip out links
 
     outfile = open(args.output_path + filename, 'w')
     outfile.write(utc_date.strftime(email_lib.DATE_TIME_FORMAT) + '\n')
     outfile.write(from_addr + '\n')
     outfile.write(str(to_addrs) + '\n')
     outfile.write(str(cc_addrs) + '\n')
-    outfile.write(str(text))
+    outfile.write(text)
     outfile.close()
 
     heartbeat += 1

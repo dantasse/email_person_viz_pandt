@@ -73,26 +73,35 @@ if args.use_tfidf:
         tfidf.get_unusual_words(args.emails_path, args.me, args.person)[0:10]]
 
 key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
-# Returns a list of string snippets (a "snippet" is a potentially-meaningful
-# sentence). TODO maybe snippets should be >1 sentence.
+# Returns a list of snippets, as defined in email_lib (a "snippet" is a
+# potentially-meaningful sentence).
 def get_snippets(email):
     snippets = []
     text_no_newlines = remove_trn(email.text)
     sentences = sentence_segmenter.tokenize(text_no_newlines)
-    for sentence in sentences:
+    for index, sentence in enumerate(sentences):
         sentence_good = False
-        #TODO all we've got here is the keyword matcher, add more ways to pick
-        # out snippets
+        reasons = [] # reasons that sentence is good
         if args.use_keyword:
             for key_word in key_words:
                 if key_word in sentence.lower():
                     sentence_good = True
+                    reasons.append('key word: ' + key_word)
         if args.use_tfidf:
             for tfidf_word in tfidf_words:
                 if tfidf_word in sentence.lower(): #TODO: this is probably not formatted the same, right?
                     sentence_good = True
+                    reasons.append('tfidf: ' + tfidf_word)
         if sentence_good:
-            snippets.append(sentence)
+            if index == 0:
+                # special case b/c sentences[-1:n] = []
+                long_snippet = ' '.join(sentences[0:3])
+            else:
+                long_snippet = ' '.join(sentences[index-1:index+2])
+            snippet = email_lib.snippet(sentence, email.from_address,\
+                email.text, long_snippet)
+            snippets.append(snippet)
+            
     return snippets
  
 all_snippets = []
@@ -103,7 +112,8 @@ for filename in os.listdir(args.emails_path):
             all_snippets.append(snippet)
 
 for snippet in all_snippets:
-    print snippet
+    print snippet.long_snippet
+    print
 
 if len(all_snippets) == 0:
     print "No snippets. Did you forget to add some ways to pick out " +\
