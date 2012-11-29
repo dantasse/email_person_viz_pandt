@@ -79,7 +79,7 @@ def get_unusual_words(emails_path, you, other):
     for word in term_frequencies:
         tfidf[word] = term_frequencies[word] * 1.0 / doc_frequencies[word]
     retval = sorted(tfidf.items(), key=lambda x: x[1])
-    print retval
+    # print retval
     retval.reverse()
     return retval
 

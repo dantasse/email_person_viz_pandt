@@ -9,7 +9,7 @@ cc addresses
 rest of the text
 """
 
-import argparse, datetime, os, pickle, random
+import argparse, datetime, os, pickle, random, string
 import email_lib, tfidf
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
@@ -37,7 +37,8 @@ parser.add_argument('--use_keyword', action='store_true',
 parser.add_argument('--use_tfidf', action='store_true',
     help='if set, use TF-IDF algorithm to pick snippets based on words that ' +
          'you use with that person more than most people')
-
+parser.add_argument('--use_all_caps', action='store_true',
+    help='if set, pick snippets that have a word in all caps.')
 
 args = parser.parse_args()
 
@@ -70,7 +71,9 @@ sentence_segmenter = pickle.Unpickler(segmenter_file).load()
 
 if args.use_tfidf:
     tfidf_words = [word_score[0] for word_score in\
-        tfidf.get_unusual_words(args.emails_path, args.me, args.person)[0:10]]
+        tfidf.get_unusual_words(args.emails_path, args.me, args.person)[0:12]]
+    for word in tfidf_words:
+        print word
 
 key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
 # Returns a list of snippets, as defined in email_lib (a "snippet" is a
@@ -84,22 +87,34 @@ def get_snippets(email):
         reasons = [] # reasons that sentence is good
         if args.use_keyword:
             for key_word in key_words:
-                if key_word in sentence.lower():
+                if key_word in sentence.lower().split():
                     sentence_good = True
                     reasons.append('key word: ' + key_word)
         if args.use_tfidf:
             for tfidf_word in tfidf_words:
-                if tfidf_word in sentence.lower(): #TODO: this is probably not formatted the same, right?
+                if tfidf_word in [word.strip(string.punctuation) for word in\
+                    sentence.lower().split()]:
                     sentence_good = True
                     reasons.append('tfidf: ' + tfidf_word)
+        if args.use_all_caps:
+            for word in sentence.split():
+                # all caps: word length >3 to avoid junk and acronyms
+                if len(word.strip(string.punctuation + string.digits)) > 3\
+                    and word.isupper():
+                    sentence_good = True
+                    reasons.append('all caps: ' + word)
         if sentence_good:
             if index == 0:
                 # special case b/c sentences[-1:n] = []
                 long_snippet = ' '.join(sentences[0:3])
+            elif index == 1 and len(sentences) == 2:
+                long_snippet = ' '.join(sentences[0:2])
+            elif index == len(sentences) - 1:
+                long_snippet = ' '.join(sentences[index-2:index+1])
             else:
                 long_snippet = ' '.join(sentences[index-1:index+2])
             snippet = email_lib.snippet(sentence, email.from_address,\
-                email.text, long_snippet)
+                email.text, long_snippet, reasons)
             snippets.append(snippet)
             
     return snippets
@@ -113,6 +128,7 @@ for filename in os.listdir(args.emails_path):
 
 for snippet in all_snippets:
     print snippet.long_snippet
+    print ','.join(snippet.reasons)
     print
 
 if len(all_snippets) == 0:

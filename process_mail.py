@@ -13,9 +13,6 @@ Message text (all the rest of the lines too)
 #
 # Some details from:
 # https://yuji.wordpress.com/2011/06/22/python-imaplib-imap-example-with-gmail/
-#
-# TODO fix a lot of weird errors that show up in emails! First of all, there's
-# a lot of "=20" or "=\n" etc that show up.
 
 import argparse, datetime, email, os, quopri, re, time
 import email_lib
@@ -28,9 +25,6 @@ parser.add_argument('output_path', help='The directory where you want to save\
     the processed emails to. (this directory should already exist as well.)')
 args = parser.parse_args()
 
-
-# path = '/Users/dtasse/Desktop/dantasse_emails/'
-# outpath = '/Users/dtasse/Desktop/dantasse_processed_emails/'
 
 def remove_trn(s):
     return s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
@@ -75,7 +69,18 @@ for filename in os.listdir(args.raw_email_path):
 
     text = get_first_text_block(msg)
     text = quopri.decodestring(str(text)) # fixes "=20" etc
+    text = text.replace('\x92', "'") # there's some base64-encoded nonsense
+    # going on here, I think, or windows-1252 or something. bug whack-a-mole?
+    # maybe.
+    text = text.replace('\x93', "'")
+    text = text.replace('\xb2', '"')
+    text = text.replace('\xb3', "'")
+    text = text.replace('\xb4', "'")
+    text = text.replace('\xb9', "'")
+    text = text.replace('\xb36', '"')
+    # text = re.sub('<.*?>', '', text) # Strip out everything in brackets
     text = re.sub('<http:.*>', '', text) # Strip out links
+
 
     outfile = open(args.output_path + filename, 'w')
     outfile.write(utc_date.strftime(email_lib.DATE_TIME_FORMAT) + '\n')

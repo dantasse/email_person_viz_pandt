@@ -2,7 +2,7 @@
 #
 # Functions that may be useful as we deal with emails a bunch.
 #
-import datetime
+import datetime, string
 
 DATE_FORMAT = '%Y-%m-%d'
 DATE_TIME_FORMAT = DATE_FORMAT + ' %H:%M:%S'
@@ -18,12 +18,19 @@ class email:
 
 class snippet:
     """ represents a hopefully-meaningful snippet of text and the email that
-        it is in. """
-    def __init__(self, snippet, from_address, email_text, long_snippet):
+        it is in.
+        snippet = the "meaningful" sentence
+        from_address: who wrote it
+        email_text: the full text of the email
+        long_snippet: a longer (3 sentences) version of the "meaningful" snippet
+        reasons: why is it a good sentence?
+    """
+    def __init__(self, snippet, from_address, email_text, long_snippet, reasons):
         self.snippet = snippet
         self.from_address = from_address
         self.email_text = email_text
         self.long_snippet = long_snippet
+        self.reasons = reasons
 
 # TODO: this is not yet perfect. Some emails, particularly long ones, have some
 # of the reply lines not starting with >'s, due to long line wrapping or
@@ -34,9 +41,9 @@ def is_reply(line):
         return True
     elif line.startswith('On') and line.endswith('wrote:'):
         return True
-    elif line.startswith('------') and 'forwarded message' in line.lower():
+    elif line.startswith('--') and 'forwarded message' in line.lower():
         return True
-    elif line.startswith('------') and 'original message' in line.lower():
+    elif line.startswith('--') and 'original message' in line.lower():
         return True
     else:
         return False
