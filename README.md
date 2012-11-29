@@ -9,6 +9,9 @@ If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff
 2. Install NLTK (Natural Language Toolkit): Go to <http://pypi.python.org/pypi/nltk/2.0.4>, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
 
         sudo python setup.py install
+(Or, if you use Pip, do:)
+
+        sudo pip install nltk
 <!--3. Get the Punkt tokenizer; this is the bit that can split text into sentences neatly. To do so, at a terminal:
 
         python
@@ -39,14 +42,19 @@ where (raw\_email\_path) is the directory you just downloaded your emails into i
 (this will be quicker. Seconds or minutes.)
 8. Now the fun part! Run generate\_snippets.py. There are a lot of options to generate\_snippets.py, so just run generate\_snippets.py -h to see all the things you can do. Some examples:
 
-        ./generate_snippets.py me@me.com you@you.com -p (path to processed emails)
-will just find snippets in all the emails between me@me.com and you@you.com.
+        ./generate_snippets.py me@me.com you@you.com -p (path to processed emails) --use_keyword --use_tfidf --use_all_caps
+will just find snippets in all the emails between me@me.com and you@you.com, using the "keyword", "tfidf word", and "all caps word" matching strategies. (that's all we've got as of 11/29/12) 
 
-        ./generate_snippets.py me@me.com you@you.com --start-date=2012-08-01 --end-date=2012-08-31 -p (path to processed emails)
-will find snippets in all the emails between these two addresses in August 2012.
-Currently (as of 11/18/12) this has a very simple algorithm for picking out "meaningful" sentences: just looks for sentences with any of the following words: [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo']. If you want to fiddle around with different ways to find meaningful sentences, generate\_snippets is the place to start. 
+        ./generate_snippets.py me@me.com you@you.com --start-date=2012-08-01 --end-date=2012-08-31 -p (path to processed emails) --use_keyword
+will find snippets in all the emails between these two addresses in August 2012, using "keyword" matching strategy.
 
-## More Details:
+### Snippet finding rules:
+
+--use\_keyword: finds snippets that contain hard-coded key words. Examples: "love", "lol", ":)"
+
+--use\_tfidf: finds snippets that contain words that you use with this person more than with other people.
+
+--use\_all\_caps: finds snippets that contain words (at least 4 letters) that are in all-caps.
 
 ### Important files: 
 
@@ -64,10 +72,7 @@ from your email.
 
 email\_lib.py: some functions that are called from other scripts.
 
-### Not important:
-
-\_\_init\_\_.py is just a marker that tells python it's okay to look in this
-directory for other python files in "import" statements; don't worry about it.
+tfidf.py: functions to pull out "tf-idf" ("term-frequency inverse-document-frequency") words; that is, words that you use a lot with this person but not with other people.
 
 ### Credits:
 english.pickle is the English sentence segmenter from Punkt, included in NLTK,
