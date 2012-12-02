@@ -124,9 +124,11 @@ for filename in os.listdir(args.emails_path):
     e1 = email_lib.read_email(args.emails_path + filename)
     if is_email_valid(e1):
         for snippet in get_snippets(e1):
+            snippet.filename = filename
             all_snippets.append(snippet)
 
 for snippet in all_snippets:
+    print snippet.filename
     print snippet.long_snippet
     print ','.join(snippet.reasons)
     print

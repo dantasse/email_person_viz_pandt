@@ -24,6 +24,7 @@ class snippet:
         email_text: the full text of the email
         long_snippet: a longer (3 sentences) version of the "meaningful" snippet
         reasons: why is it a good sentence?
+        filename: the file name it's saved as (optional, for debugging)
     """
     def __init__(self, snippet, from_address, email_text, long_snippet, reasons):
         self.snippet = snippet
@@ -31,6 +32,7 @@ class snippet:
         self.email_text = email_text
         self.long_snippet = long_snippet
         self.reasons = reasons
+    filename = ''
 
 # TODO: this is not yet perfect. Some emails, particularly long ones, have some
 # of the reply lines not starting with >'s, due to long line wrapping or
