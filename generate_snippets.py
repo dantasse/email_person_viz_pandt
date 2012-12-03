@@ -9,7 +9,7 @@ cc addresses
 rest of the text
 """
 
-import argparse, datetime, os, pickle, random, string, sys
+import argparse, datetime, os, pickle, random, re, string, sys
 import email_lib, tfidf
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
@@ -106,6 +106,8 @@ def build_long_snippet(sentences, index):
 
     return long_snippet
 
+def remove_links(text):
+    return re.sub('http://\S*', '(link)', text)
  
 key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
 # Returns a list of snippets, as defined in email_lib (a "snippet" is a
@@ -113,7 +115,8 @@ key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
 def get_snippets(email):
     snippets = []
     text_no_newlines = remove_trn(email.text)
-    sentences = sentence_segmenter.tokenize(text_no_newlines)
+    text_no_links = remove_links(text_no_newlines)
+    sentences = sentence_segmenter.tokenize(text_no_links)
     for index, sentence in enumerate(sentences):
         sentence_good = False
         reasons = [] # reasons that sentence is good
