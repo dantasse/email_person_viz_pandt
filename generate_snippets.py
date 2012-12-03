@@ -85,7 +85,7 @@ if args.use_tfidf:
 # |sentences| = all sentences in the email, |index| = index of matching word
 def build_long_snippet(sentences, index):
     max_length = 1.2 * args.snippet_chars
-    long_snippet = ''
+    long_snippet = sentences[index]
     start_index = index # index of matching word
     end_index = index + 1
     while len(long_snippet) < args.snippet_chars:
@@ -94,6 +94,8 @@ def build_long_snippet(sentences, index):
         new_long_snippet = ' '.join(sentences[start_index:end_index])
         if len(new_long_snippet) > max_length:
             return long_snippet
+        long_snippet = new_long_snippet
+
         if start_index > 0:
             start_index -= 1
         new_long_snippet = ' '.join(sentences[start_index:end_index])
