@@ -47,6 +47,7 @@ will just find snippets in all the emails between me@me.com and you@you.com, usi
 
         ./generate_snippets.py me@me.com you@you.com --start-date=2012-08-01 --end-date=2012-08-31 -p (path to processed emails) --use_keyword
 will find snippets in all the emails between these two addresses in August 2012, using "keyword" matching strategy.
+9. If you don't know who you ought to be finding snippets from, try top\_emailers.py, explained more below.
 
 ### Snippet finding rules:
 
@@ -74,12 +75,15 @@ email\_lib.py: some functions that are called from other scripts.
 
 tfidf.py: functions to pull out "tf-idf" ("term-frequency inverse-document-frequency") words; that is, words that you use a lot with this person but not with other people.
 
+top\_emailers.py: way to find the people you email with most frequently. Usage:
+
+    ./top_emailers.py (your email address) -p (path to processed emails)
+
 ### Credits:
 english.pickle is the English sentence segmenter from Punkt, included in NLTK,
 which is amazing. More info: <http://nltk.org/>
 
 ### TODO next:
-3. figure out top 10/15/20 candidate email addresses
 1. remove "sent from my iphone"
 4. how long does it take to download email?
 2. generate images programmatically?
