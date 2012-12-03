@@ -9,7 +9,7 @@ cc addresses
 rest of the text
 """
 
-import argparse, datetime, os, pickle, random, string
+import argparse, datetime, os, pickle, random, string, sys
 import email_lib, tfidf
 
 parser = argparse.ArgumentParser(description='Display some "meaningful"\
@@ -32,6 +32,8 @@ parser.add_argument('-p', '--emails_path',
     help='the path to the directory with all the emails')
 parser.add_argument('-n', '--num_snippets', type=int, default=1,
     help='the number of snippets to get')
+parser.add_argument('--snippet_chars', type=int, default=400,
+    help='the approximate number of characters in each snippet')
 parser.add_argument('--use_keyword', action='store_true',
     help='if set, use keyword matching (like "love") to find snippets')
 parser.add_argument('--use_tfidf', action='store_true',
@@ -41,6 +43,10 @@ parser.add_argument('--use_all_caps', action='store_true',
     help='if set, pick snippets that have a word in all caps.')
 
 args = parser.parse_args()
+
+if not (args.use_keyword or args.use_tfidf or args.use_all_caps):
+    sys.exit("You must set at least one way to find snippets. " +\
+             "Try ./generate_snippets -h for details.")
 
 start_date = datetime.datetime.strptime(args.start_date, email_lib.DATE_FORMAT)
 end_date = datetime.datetime.strptime(args.end_date, email_lib.DATE_FORMAT)\
@@ -75,6 +81,32 @@ if args.use_tfidf:
     for word in tfidf_words:
         print word
 
+# build it out until it's approx snippet_chars length
+# |sentences| = all sentences in the email, |index| = index of matching word
+def build_long_snippet(sentences, index):
+    max_length = 1.2 * args.snippet_chars
+    long_snippet = ''
+    start_index = index # index of matching word
+    end_index = index + 1
+    while len(long_snippet) < args.snippet_chars:
+        if end_index < len(sentences):
+            end_index += 1
+        new_long_snippet = ' '.join(sentences[start_index:end_index])
+        if len(new_long_snippet) > max_length:
+            return long_snippet
+        if start_index > 0:
+            start_index -= 1
+        new_long_snippet = ' '.join(sentences[start_index:end_index])
+        if len(new_long_snippet) > max_length:
+            return long_snippet
+
+        if start_index <= 0 and end_index >= len(sentences):
+            return new_long_snippet
+        long_snippet = new_long_snippet
+
+    return long_snippet
+
+ 
 key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
 # Returns a list of snippets, as defined in email_lib (a "snippet" is a
 # potentially-meaningful sentence).
@@ -104,15 +136,7 @@ def get_snippets(email):
                     sentence_good = True
                     reasons.append('all caps: ' + word)
         if sentence_good:
-            if index == 0:
-                # special case b/c sentences[-1:n] = []
-                long_snippet = ' '.join(sentences[0:3])
-            elif index == 1 and len(sentences) == 2:
-                long_snippet = ' '.join(sentences[0:2])
-            elif index == len(sentences) - 1:
-                long_snippet = ' '.join(sentences[index-2:index+1])
-            else:
-                long_snippet = ' '.join(sentences[index-1:index+2])
+            long_snippet = build_long_snippet(sentences, index)
             snippet = email_lib.snippet(sentence, email.from_address,\
                 email.text, long_snippet, reasons)
             snippets.append(snippet)
@@ -134,6 +158,4 @@ for snippet in all_snippets:
     print
 
 if len(all_snippets) == 0:
-    print "No snippets. Did you forget to add some ways to pick out " +\
-          "snippets? Try ./generate_snippets -h for details."
-
+    print "No snippets." 
