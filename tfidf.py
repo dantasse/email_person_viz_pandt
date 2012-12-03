@@ -72,7 +72,8 @@ def get_unusual_words(emails_path, you, other):
     doc_frequencies = get_doc_frequencies(person_email_texts)
     term_frequencies = defaultdict(int)
     for email in person_email_texts[other]:
-        for word in email.split():
+        for word in email.split()[0:-1]: # cut off last word because it's
+                                         # often just a signature
             if is_valid_tfidf_word(word):
                 term_frequencies[normalize_word(word)] += 1
     tfidf = {}

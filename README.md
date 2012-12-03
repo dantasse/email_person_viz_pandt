@@ -79,7 +79,8 @@ english.pickle is the English sentence segmenter from Punkt, included in NLTK,
 which is amazing. More info: <http://nltk.org/>
 
 ### TODO next:
-2. generate images programmatically?
 3. figure out top 10/15/20 candidate email addresses
+1. remove "sent from my iphone"
 4. how long does it take to download email?
+2. generate images programmatically?
 

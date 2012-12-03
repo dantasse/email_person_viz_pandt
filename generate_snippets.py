@@ -128,7 +128,7 @@ def get_snippets(email):
         if args.use_tfidf:
             for tfidf_word in tfidf_words:
                 if tfidf_word in [word.strip(string.punctuation) for word in\
-                    sentence.lower().split()]:
+                    sentence.lower().split()[0:-1]]:
                     sentence_good = True
                     reasons.append('tfidf: ' + tfidf_word)
         if args.use_all_caps:
