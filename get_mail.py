@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 #
 # Script to get all your email from gmail.
+# For my 62k emails, it took about 6-7 hrs (twice) on 12/6/12.
+# For Daniel's 15k emails, it took about 80 minutes.
+# For my 3k emails from work, took 10 minutes.
 #
 # From this Stack Overflow post:
 # http://stackoverflow.com/questions/348630/how-can-i-download-all-emails-with-attachments-from-gmail

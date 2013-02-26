@@ -25,8 +25,7 @@ for filename in os.listdir(args.emails_path):
     if args.your_email == e1.from_address:
         for to_address in e1.to_addresses:
             top_people[to_address] += 1
-    # if you're in the from and the to, then you sent it, so better to add all
-    # the people in the to_addresses, and not add yourself.
+    # if you're in the from and the to, don't add yourself twice
     elif args.your_email in e1.to_addresses:
         top_people[e1.from_address] += 1
 
