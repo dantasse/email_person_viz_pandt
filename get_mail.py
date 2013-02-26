@@ -36,19 +36,13 @@ print "Number of emails to download: " + str(len(items))
 # let's save them each to a file so we don't have to keep asking gmail
 email_id = 0
 start_time = time.time()
-time_spent_network = 0
-time_spent_fs = 0
 for emailid in items:
-    net_time_start = time.time()
     resp, data = m.fetch(emailid, "(RFC822)") # fetching the mail, "`(RFC822)`" means "get the whole stuff", but you can ask for headers only, etc
-    time_spent_network += (time.time() - net_time_start)
-    fs_time_start = time.time()
     email_body = data[0][1]
     output_file = open(args.path + 'email_' + str(email_id) + '.txt', 'w')
     email_id += 1
     output_file.write(email_body)
     output_file.close()
-    time_spent_fs += (time.time() - fs_time_start)
     if (email_id % 100 == 0):
         print 'This many messages downloaded: ' + str(email_id)
         num_sec = time.time() - start_time
@@ -57,5 +51,3 @@ for emailid in items:
         print 'Rate: ' + str(rate) + ' messages per second'
         est_sec_left = (len(items) - email_id) / rate
         print 'Estimated minutes left: ' + str(est_sec_left / 60)
-        print 'Time spent over network: ' + str(time_spent_network)
-        print 'Time spent in file system: ' + str(time_spent_fs)
