@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 #
 # Script to get all your email from gmail.
-# For my 62k emails, it took about 6-7 hrs (twice) on 12/6/12.
-# For Daniel's 15k emails, it took about 80 minutes.
-# For my 3k emails from work, took 10 minutes.
 #
 # From this Stack Overflow post:
 # http://stackoverflow.com/questions/348630/how-can-i-download-all-emails-with-attachments-from-gmail
@@ -14,13 +11,17 @@ import argparse, email, getpass, imaplib, os, time
 from multiprocessing import Process, Value
 
 parser = argparse.ArgumentParser(description='Downloads all your email.')
-parser.add_argument('path', help='Directory to save all your emails to.\
-                                  Ending with a /')
+parser.add_argument('--path', help='Directory to save all your emails to.\
+                                  Ending with a /', default='emails/')
 parser.add_argument('--processes', help='How many workers to use.',
-                    type=int, default=1)
+                    type=int, default=10)
 args = parser.parse_args()
 
-detach_dir = '.' # directory where to save attachments (default: current)
+# create the output folder
+directory = os.path.dirname(args.path)
+if not os.path.exists(directory):
+    os.makedirs(directory)
+
 print "This application will attempt to save all your gmail to files.\
  If this is not what you want, quit now with ctrl-c." 
 user = raw_input("Enter your GMail username:")
@@ -29,14 +30,12 @@ pwd = getpass.getpass("Enter your password: ")
 # start and authenticate a new process for each worker
 mail_conns = []
 for i in range(args.processes):
-    print "starting a new process"
     # connecting to the gmail imap server
     m = imaplib.IMAP4_SSL("imap.gmail.com")
     m.login(user,pwd)
     m.select("[Gmail]/All Mail", readonly=True) # here you a can choose a mail box like INBOX instead
     # use m.list() to get all the mailboxes
     mail_conns.append(m)
-
 
 resp, items = mail_conns[0].search(None, "ALL")
 # you could filter using the IMAP rules here (check http://www.example-code.com/csharp/imap-search-critera.asp)
