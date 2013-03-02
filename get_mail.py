@@ -43,18 +43,35 @@ items = items[0].split() # getting the mails id
 print "Number of emails to download: " + str(len(items))
 start_time = time.time()
 
-def get_one_email(mail_conn, id):
-    resp, data = mail_conn.fetch(id, "(RFC822)") # fetching the mail, "`(RFC822)`" means "get the whole stuff", but you can ask for headers only, etc
-    email_body = data[0][1]
-    output_file = open(args.path + 'email_' + str(id) + '.txt', 'w')
-    output_file.write(email_body)
-    output_file.close()
+def get_hundred_emails(mail_conn, ids):
+    # TODO you can fetch a range of ids, I think! try getting multiple messages at once.
+    # TODO get the odd corner cases after all the even hundreds
+    resp, data = mail_conn.fetch(','.join(ids), "(RFC822)") # fetching the mail, "`(RFC822)`" means "get the whole stuff", but you can ask for headers only, etc
+    # No sense in trying to get only the attachments, b/c gmail throttles us
+    # after a certain number of requests anyway. blah.
+    
+    if resp != 'OK':
+        print "Get " + str(id) + ": " + str(resp)
+
+    for idx, val in enumerate(data):
+        # This gives us a goofy two-part array that has all the even numbers
+        # with one email message each and the odd numbers with just a close
+        # paren. meh?
+        if (idx % 2 == 0):
+            # print val[1]
+            
+            email_body = val[1]
+            output_file = open(args.path + 'email_' + str(ids[idx/2]) + '.txt', 'w')
+            output_file.write(email_body)
+            output_file.close()
 
 def get_some_emails(mail_conn, ids, emails_gotten):
-    for id in ids:
-        get_one_email(mail_conn, id)
-        emails_gotten.value += 1
-        if (emails_gotten.value % 100 == 0):
+    while(len(ids) > 100):
+        first_ten_ids = ids[0:100]
+        ids = ids[100:]
+        get_hundred_emails(mail_conn, first_ten_ids)
+        emails_gotten.value += 100
+        if (emails_gotten.value % 1000 == 0):
             print 'Emails saved:' + str(emails_gotten.value)
             elapsed_sec = time.time() - start_time
             print 'Time elapsed (seconds): ' + str(elapsed_sec)
