@@ -71,7 +71,10 @@ def get_some_emails(mail_conn, ids, emails_gotten):
     while(len(ids) > 0):
         batch_ids = ids[0:20]
         ids = ids[20:]
-        get_batch_of_emails(mail_conn, batch_ids)
+        try:
+            get_batch_of_emails(mail_conn, batch_ids)
+        except:
+            print "Error getting emails; skipping batch: " + str(batch_ids)
         emails_gotten.value += len(batch_ids)
 
         # log every batch for the first few batches, then every 100
