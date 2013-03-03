@@ -27,6 +27,8 @@ print "This application will attempt to save all your gmail to files.\
 user = raw_input("Enter your GMail username:")
 pwd = getpass.getpass("Enter your password: ")
 
+print "Connecting to GMail..."
+
 # start and authenticate a new process for each worker
 mail_conns = []
 for i in range(args.processes):
@@ -37,52 +39,54 @@ for i in range(args.processes):
     # use m.list() to get all the mailboxes
     mail_conns.append(m)
 
+print "Connected and authenticated successfully."
+
 resp, items = mail_conns[0].search(None, "ALL")
 # you could filter using the IMAP rules here (check http://www.example-code.com/csharp/imap-search-critera.asp)
 items = items[0].split() # getting the mails id
 print "Number of emails to download: " + str(len(items))
+print "Starting download..."
 start_time = time.time()
 
-def get_hundred_emails(mail_conn, ids):
-    # TODO you can fetch a range of ids, I think! try getting multiple messages at once.
-    # TODO get the odd corner cases after all the even hundreds
+def get_batch_of_emails(mail_conn, ids):
     resp, data = mail_conn.fetch(','.join(ids), "(RFC822)") # fetching the mail, "`(RFC822)`" means "get the whole stuff", but you can ask for headers only, etc
-    # No sense in trying to get only the attachments, b/c gmail throttles us
-    # after a certain number of requests anyway. blah.
-    
+    # No sense in trying to get only the message w/o attachments, b/c gmail
+    # throttles us after a certain number of requests anyway.
+
     if resp != 'OK':
-        print "Get " + str(id) + ": " + str(resp)
+        print "Get " + str(ids) + ": " + str(resp)
 
     for idx, val in enumerate(data):
-        # This gives us a goofy two-part array that has all the even numbers
+        # |data| is a goofy two-part array that has all the even numbers
         # with one email message each and the odd numbers with just a close
-        # paren. meh?
+        # paren. well, okay?
         if (idx % 2 == 0):
-            # print val[1]
-            
             email_body = val[1]
             output_file = open(args.path + 'email_' + str(ids[idx/2]) + '.txt', 'w')
             output_file.write(email_body)
             output_file.close()
 
 def get_some_emails(mail_conn, ids, emails_gotten):
-    while(len(ids) > 100):
-        first_ten_ids = ids[0:100]
-        ids = ids[100:]
-        get_hundred_emails(mail_conn, first_ten_ids)
-        emails_gotten.value += 100
-        if (emails_gotten.value % 1000 == 0):
+    original_ids = ids
+    while(len(ids) > 0):
+        batch_ids = ids[0:20]
+        ids = ids[20:]
+        get_batch_of_emails(mail_conn, batch_ids)
+        emails_gotten.value += len(batch_ids)
+
+        # log every batch for the first few batches, then every 100
+        if (emails_gotten.value % 100 < 20 or emails_gotten.value < 1000):
             print 'Emails saved:' + str(emails_gotten.value)
             elapsed_sec = time.time() - start_time
             print 'Time elapsed (seconds): ' + str(elapsed_sec)
             emails_left = len(items) - emails_gotten.value
             emails_per_minute = emails_gotten.value / elapsed_sec * 60
             print 'Expected time left (minutes): ' + str(emails_left / emails_per_minute)
+    print "One process done, got " + str(len(original_ids)) + " emails: " + str(original_ids[0]) + " to " + str(original_ids[-1])
+    exit(0)
 
-# 7600 emails in 400 seconds, like 19 emails / sec
-# started again at 5:51
 if __name__ == '__main__':
-    counter = Value('i', 0)
+    counter = Value('i', 0) # accessed by multiple processes. 'i' = integer
     num_emails = len(items)
     for i in range(len(mail_conns)):
         start_index = (num_emails * i) / len(mail_conns)
