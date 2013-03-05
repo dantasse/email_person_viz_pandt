@@ -7,7 +7,7 @@
 # and
 # https://yuji.wordpress.com/2011/06/22/python-imaplib-imap-example-with-gmail/
 
-import argparse, email, getpass, imaplib, os, time
+import argparse, email, getpass, imaplib, os, sys, time
 from multiprocessing import Process, Value
 
 parser = argparse.ArgumentParser(description='Downloads all your email.')
@@ -70,11 +70,18 @@ def get_some_emails(mail_conn, ids, emails_gotten):
     original_ids = ids
     while(len(ids) > 0):
         batch_ids = ids[0:20]
-        ids = ids[20:]
         try:
             get_batch_of_emails(mail_conn, batch_ids)
-        except:
-            print "Error getting emails; skipping batch: " + str(batch_ids)
+        except imaplib.IMAP4.abort:
+            print "imaplib.abort on batch: " + str(batch_ids[0]) + " to " + str(batch_ids[-1])
+            print "Restarting connection and retrying"
+            mail_conn = imaplib.IMAP4_SSL("imap.gmail.com")
+            mail_conn.login(user,pwd)
+            mail_conn.select("[Gmail]/All Mail", readonly=True)
+            print "Reconnected, trying again"
+            continue # |ids| hasn't changed yet, so just retry
+
+        ids = ids[20:]
         emails_gotten.value += len(batch_ids)
 
         # log every batch for the first few batches, then every 100
