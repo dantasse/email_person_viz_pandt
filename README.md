@@ -12,12 +12,7 @@ If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff
 (Or, if you use Pip, do:)
 
         sudo pip install nltk
-<!--3. Get the Punkt tokenizer; this is the bit that can split text into sentences neatly. To do so, at a terminal:
 
-        python
-        import nltk
-        nltk.download()
-Now you'll see a window pop up; navigate to "Models" then select Punkt and download.-->
 4. Get all of the code for this project. Two options: First, you can run:
 
         git clone https://github.com/dantasse/email_person_viz_pandt.git
@@ -30,11 +25,7 @@ And you'll be up to date. On the other hand, if you don't want to, or if you don
 
         ./run_all.py
 This script will ask you for your gmail username and password, then it'll just download them all, into a new folder it will created called emails/. If you use 2-factor, you'll need an app-specific password for this; if this sentence makes no sense to you then just ignore it (and ask Dan about why 2-factor is cool and you should probably do it, but that's unrelated to this project). It'll take a while (for Dan's 60k messages, 2.3 gb, it took about 20 minutes).
-<!--7. Run:
 
-        ./process_mail.py
-This will make a new directory called "processed\_emails/" and save processed versions of your emails there.
-(this will be quicker. Seconds or minutes.)-->
 7. run\_all.py will automatically output the top 20 people you email with most frequently. If you need more than 20, run top\_emailers.py again, like so:
 
         ./top_emailers.py (your email address) -n (number you want)
