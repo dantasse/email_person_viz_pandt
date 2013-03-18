@@ -28,9 +28,8 @@ And you'll be up to date. On the other hand, if you don't want to, or if you don
 5. Navigate to the folder where you downloaded/cloned it, in a terminal.
 6. Run:
 
-<!--        ./get_mail.py-->
         ./run_all.py
-This script will ask you for your gmail username and password, then it'll just download them all, into a new folder it will created called emails/. If you use 2-factor, you'll need an app-specific password for this; if this sentence makes no sense to you then just ignore it (and ask Dan about why 2-factor is cool and you should probably do it, but that's unrelated to this project). It'll take a while (probably about 20 minutes per 100,000 messages).
+This script will ask you for your gmail username and password, then it'll just download them all, into a new folder it will created called emails/. If you use 2-factor, you'll need an app-specific password for this; if this sentence makes no sense to you then just ignore it (and ask Dan about why 2-factor is cool and you should probably do it, but that's unrelated to this project). It'll take a while (for Dan's 60k messages, 2.3 gb, it took about 20 minutes).
 <!--7. Run:
 
         ./process_mail.py
