@@ -15,6 +15,7 @@ parser.add_argument('--path', help='Directory to save all your emails to.\
                                   Ending with a /', default='emails/')
 parser.add_argument('--processes', help='How many workers to use.',
                     type=int, default=10)
+parser.add_argument('--email_address', help='Your email address')
 args = parser.parse_args()
 
 # create the output folder
@@ -22,9 +23,10 @@ directory = os.path.dirname(args.path)
 if not os.path.exists(directory):
     os.makedirs(directory)
 
-print "This application will attempt to save all your gmail to files.\
- If this is not what you want, quit now with ctrl-c." 
-user = raw_input("Enter your GMail username:")
+if args.email_address:
+    user = args.email_address
+else:
+    user = raw_input("Enter your GMail username:")
 pwd = getpass.getpass("Enter your password: ")
 
 print "Connecting to GMail..."
