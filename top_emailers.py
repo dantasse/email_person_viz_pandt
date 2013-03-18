@@ -13,9 +13,9 @@ parser = argparse.ArgumentParser(description='Find the top N people that ' + \
  
 parser.add_argument('your_email', help='your email address')
 parser.add_argument('-p', '--emails_path',
-    default='/Users/dtasse/Desktop/processed_emails/',
+    default='processed_emails/',
     help='the path to the directory with all the emails')
-parser.add_argument('-n', '--num_people', type=int, default=10,
+parser.add_argument('-n', '--num_people', type=int, default=20,
     help='the number of people to get')
 args = parser.parse_args()
 
