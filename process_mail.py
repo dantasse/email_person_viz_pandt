@@ -43,15 +43,7 @@ def get_first_text_block(email_message_instance):
     elif maintype == 'text':
         return email_message_instance.get_payload()
 
-heartbeat = 0
-start_time = time.time()
-
-# make sure the output directory exists
-outdir = os.path.dirname(args.output_path)
-if not os.path.exists(outdir):
-    os.makedirs(outdir)
-
-for filename in os.listdir(args.raw_email_path):
+def process_email(path):
     contents = open(args.raw_email_path + filename, 'r').read()
     msg = email.message_from_string(contents)
     
@@ -70,7 +62,7 @@ for filename in os.listdir(args.raw_email_path):
         utc_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
     else:
         print "error parsing date in file: " + filename
-        continue
+        return
 
     # TODO get the subject line
 
@@ -97,10 +89,21 @@ for filename in os.listdir(args.raw_email_path):
     outfile.write(text)
     outfile.close()
 
-    heartbeat += 1
-    if (heartbeat % 1000 == 0):
-        print "Messages processed: " + str(heartbeat)
-    # print "%s\t%s\t%s\t%s" % (utc_date, from_addr, to_addrs, cc_addrs)
+if __name__ == '__main__':
 
-time_elapsed = time.time() - start_time
-print "Done. Time elapsed: " + str(time_elapsed)
+    # make sure the output directory exists
+    outdir = os.path.dirname(args.output_path)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+
+    heartbeat = 0
+    start_time = time.time()
+    for filename in os.listdir(args.raw_email_path):
+        process_email(args.raw_email_path + filename)
+        heartbeat += 1
+        if (heartbeat % 1000 == 0):
+            print "Messages processed: " + str(heartbeat)
+        # print "%s\t%s\t%s\t%s" % (utc_date, from_addr, to_addrs, cc_addrs)
+
+    time_elapsed = time.time() - start_time
+    print "Done. Time elapsed: " + str(time_elapsed)
