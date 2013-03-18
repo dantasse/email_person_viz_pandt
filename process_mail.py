@@ -19,12 +19,13 @@ import email_lib
 
 parser = argparse.ArgumentParser(description='Processes your email to remove\
     all the extra garbage we don\'t need.')
-parser.add_argument('raw_email_path', help='The directory where your emails\
-    already are. (you should have run get_mail.py to put them there.')
-parser.add_argument('output_path', help='The directory where you want to save\
-    the processed emails to. (this directory should already exist as well.)')
+parser.add_argument('--raw_email_path', help='The directory where your emails\
+    already are. (you should have run get_mail.py to put them there.',
+    default='emails/')
+parser.add_argument('--output_path', help='The directory where you want to save\
+    the processed emails to.',
+    default='processed_emails/')
 args = parser.parse_args()
-
 
 def remove_trn(s):
     return s.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
@@ -44,6 +45,12 @@ def get_first_text_block(email_message_instance):
 
 heartbeat = 0
 start_time = time.time()
+
+# make sure the output directory exists
+outdir = os.path.dirname(args.output_path)
+if not os.path.exists(outdir):
+    os.makedirs(outdir)
+
 for filename in os.listdir(args.raw_email_path):
     contents = open(args.raw_email_path + filename, 'r').read()
     msg = email.message_from_string(contents)
