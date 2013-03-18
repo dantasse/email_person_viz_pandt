@@ -28,16 +28,20 @@ And you'll be up to date. On the other hand, if you don't want to, or if you don
 5. Navigate to the folder where you downloaded/cloned it, in a terminal.
 6. Run:
 
-        ./get_mail.py
+<!--        ./get_mail.py-->
+        ./run_all.py
 This script will ask you for your gmail username and password, then it'll just download them all, into a new folder it will created called emails/. If you use 2-factor, you'll need an app-specific password for this; if this sentence makes no sense to you then just ignore it (and ask Dan about why 2-factor is cool and you should probably do it, but that's unrelated to this project). It'll take a while (probably about 20 minutes per 100,000 messages).
-7. Run:
+<!--7. Run:
 
         ./process_mail.py
 This will make a new directory called "processed\_emails/" and save processed versions of your emails there.
-(this will be quicker. Seconds or minutes.)
-7. Run top\_emailers.py to find the people you email with most frequently. Usage:
+(this will be quicker. Seconds or minutes.)-->
+7. run\_all.py will automatically output the top 20 people you email with most frequently. If you need more than 20, run top\_emailers.py again, like so:
 
-        ./top_emailers.py (your email address)
+        ./top_emailers.py (your email address) -n (number you want)
+e.g.
+ 
+        ./top_emailers.py dan@foo.com -n 50
 
 8. Now the fun part! Run generate\_snippets.py. There are a lot of options to generate\_snippets.py, so just run generate\_snippets.py -h to see all the things you can do. Some examples:
 
