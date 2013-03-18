@@ -15,6 +15,7 @@ Message text (all the rest of the lines too)
 # https://yuji.wordpress.com/2011/06/22/python-imaplib-imap-example-with-gmail/
 
 import argparse, datetime, email, os, quopri, re, time
+from multiprocessing import Pool, Value
 import email_lib
 
 parser = argparse.ArgumentParser(description='Processes your email to remove\
@@ -43,7 +44,11 @@ def get_first_text_block(email_message_instance):
     elif maintype == 'text':
         return email_message_instance.get_payload()
 
-def process_email(path):
+
+global counter # sorry
+counter = Value('i', 0)
+
+def process_email(filename):
     contents = open(args.raw_email_path + filename, 'r').read()
     msg = email.message_from_string(contents)
     
@@ -61,7 +66,7 @@ def process_email(path):
     if date_tuple:
         utc_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
     else:
-        print "error parsing date in file: " + filename
+        print "could not parse date in file: " + filename + ", skipping file."
         return
 
     # TODO get the subject line
@@ -80,7 +85,6 @@ def process_email(path):
     # text = re.sub('<.*?>', '', text) # Strip out everything in brackets
     text = re.sub('<http:.*>', '', text) # Strip out links
 
-
     outfile = open(args.output_path + filename, 'w')
     outfile.write(utc_date.strftime(email_lib.DATE_TIME_FORMAT) + '\n')
     outfile.write(from_addr + '\n')
@@ -89,21 +93,24 @@ def process_email(path):
     outfile.write(text)
     outfile.close()
 
+    global counter # sorry again
+    counter.value += 1
+    if (counter.value % 1000 == 0):
+        print "emails processed: " + str(counter.value)
+
 if __name__ == '__main__':
 
     # make sure the output directory exists
     outdir = os.path.dirname(args.output_path)
     if not os.path.exists(outdir):
         os.makedirs(outdir)
+    print "Processing emails from " + str(args.raw_email_path) + ". Output will go to " + str(outdir) + "."
 
-    heartbeat = 0
     start_time = time.time()
-    for filename in os.listdir(args.raw_email_path):
-        process_email(args.raw_email_path + filename)
-        heartbeat += 1
-        if (heartbeat % 1000 == 0):
-            print "Messages processed: " + str(heartbeat)
-        # print "%s\t%s\t%s\t%s" % (utc_date, from_addr, to_addrs, cc_addrs)
-
+    p = Pool(10)
+    files = os.listdir(args.raw_email_path)
+    print "Number of emails to process: " + str(len(files))
+    p.map(process_email, files)
+    
     time_elapsed = time.time() - start_time
-    print "Done. Time elapsed: " + str(time_elapsed)
+    print "Processing messages done. Time elapsed (seconds): " + str(time_elapsed)
