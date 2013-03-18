@@ -11,6 +11,8 @@ from collections import Counter
 parser = argparse.ArgumentParser(description='Find the top N people that ' + \
     'you email most frequently.')
  
+# It's important to have your email address because you want to add a name to
+# the "top emailers" if they directly email with you (e.g. no mailing lists).
 parser.add_argument('your_email', help='your email address')
 parser.add_argument('-p', '--emails_path',
     default='processed_emails/',
@@ -29,9 +31,6 @@ for filename in os.listdir(args.emails_path):
     elif args.your_email in e1.to_addresses:
         top_people[e1.from_address] += 1
 
-print top_people.most_common(args.num_people)
-
-# Pretty-print top N
 for person, count in top_people.most_common(args.num_people):
     print person + ', ' + str(count)
 
