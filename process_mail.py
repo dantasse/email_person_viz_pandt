@@ -49,54 +49,58 @@ global counter # sorry
 counter = Value('i', 0)
 
 def process_email(filename):
-    contents = open(args.raw_email_path + filename, 'r').read()
-    msg = email.message_from_string(contents)
-    
-    from_str = remove_trn(msg['From'] or '')
-    from_addr = email.utils.parseaddr(from_str)[1]
+    try:
+        contents = open(args.raw_email_path + filename, 'r').read()
+        msg = email.message_from_string(contents)
+        
+        from_str = remove_trn(msg['From'] or '')
+        from_addr = email.utils.parseaddr(from_str)[1]
 
-    # getaddresses returns a list of ("Dan Tasse", "dantasse@cmu.edu") tuples
-    tos = msg.get_all('to', [])
-    to_addrs = [remove_trn(addr[1]).lower() for addr in email.utils.getaddresses(tos)]
+        # getaddresses returns a list of ("Dan Tasse", "dantasse@cmu.edu") tuples
+        tos = msg.get_all('to', [])
+        to_addrs = [remove_trn(addr[1]).lower() for addr in email.utils.getaddresses(tos)]
 
-    ccs = msg.get_all('cc', [])
-    cc_addrs = [remove_trn(addr[1]).lower() for addr in email.utils.getaddresses(ccs)]
+        ccs = msg.get_all('cc', [])
+        cc_addrs = [remove_trn(addr[1]).lower() for addr in email.utils.getaddresses(ccs)]
 
-    date_tuple = email.utils.parsedate_tz(msg['date'])
-    if date_tuple:
-        utc_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
-    else:
-        print "could not parse date in file: " + filename + ", skipping file."
-        return
+        date_tuple = email.utils.parsedate_tz(msg['date'])
+        if date_tuple:
+            utc_date = datetime.datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
+        else:
+            print "could not parse date in file: " + filename + ", skipping file."
+            return
 
-    # TODO get the subject line
+        # TODO get the subject line
 
-    text = get_first_text_block(msg)
-    text = quopri.decodestring(str(text)) # fixes "=20" etc
-    text = text.replace('\x92', "'") # there's some base64-encoded nonsense
-    # going on here, I think, or windows-1252 or something. bug whack-a-mole?
-    # maybe.
-    text = text.replace('\x93', "'")
-    text = text.replace('\xb2', '"')
-    text = text.replace('\xb3', "'")
-    text = text.replace('\xb4', "'")
-    text = text.replace('\xb9', "'")
-    text = text.replace('\xb36', '"')
-    # text = re.sub('<.*?>', '', text) # Strip out everything in brackets
-    text = re.sub('<http:.*>', '', text) # Strip out links
+        text = get_first_text_block(msg)
+        text = quopri.decodestring(str(text)) # fixes "=20" etc
+        text = text.replace('\x92', "'") # there's some base64-encoded nonsense
+        # going on here, I think, or windows-1252 or something. bug whack-a-mole?
+        # maybe.
+        text = text.replace('\x93', "'")
+        text = text.replace('\xb2', '"')
+        text = text.replace('\xb3', "'")
+        text = text.replace('\xb4', "'")
+        text = text.replace('\xb9', "'")
+        text = text.replace('\xb36', '"')
+        # text = re.sub('<.*?>', '', text) # Strip out everything in brackets
+        text = re.sub('<http:.*>', '', text) # Strip out links
 
-    outfile = open(args.output_path + filename, 'w')
-    outfile.write(utc_date.strftime(email_lib.DATE_TIME_FORMAT) + '\n')
-    outfile.write(from_addr + '\n')
-    outfile.write(str(to_addrs) + '\n')
-    outfile.write(str(cc_addrs) + '\n')
-    outfile.write(text)
-    outfile.close()
+        outfile = open(args.output_path + filename, 'w')
+        outfile.write(utc_date.strftime(email_lib.DATE_TIME_FORMAT) + '\n')
+        outfile.write(from_addr + '\n')
+        outfile.write(str(to_addrs) + '\n')
+        outfile.write(str(cc_addrs) + '\n')
+        outfile.write(text)
+        outfile.close()
 
-    global counter # sorry again
-    counter.value += 1
-    if (counter.value % 1000 == 0):
-        print "emails processed: " + str(counter.value)
+        global counter # sorry again
+        counter.value += 1
+        if (counter.value % 1000 == 0):
+            print "emails processed: " + str(counter.value)
+    except:
+        print "Error on email: " + str(filename)
+        
 
 if __name__ == '__main__':
 
