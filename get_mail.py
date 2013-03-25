@@ -27,7 +27,10 @@ if args.email_address:
     user = args.email_address
 else:
     user = raw_input("Enter your GMail username:")
-pwd = getpass.getpass("Enter your password: ")
+# TODO: it'd be nice to display little ***** as you type password. wonder if
+# python supports that.
+pwd = getpass.getpass("Enter your password (no characters will show up when\
+ you type): ")
 
 print "Connecting to GMail..."
 
