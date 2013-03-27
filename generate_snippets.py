@@ -156,7 +156,15 @@ for filename in os.listdir(args.emails_path):
             snippet.filename = filename
             all_snippets.append(snippet)
 
-for snippet in all_snippets:
+# Randomly select N snippets
+random.shuffle(all_snippets)
+if args.num_snippets <= len(all_snippets):
+    some_snippets = all_snippets[0:args.num_snippets]
+else:
+    print "Not enough snippets."
+    some_snippets = all_snippets
+
+for snippet in some_snippets:
     print snippet.filename
     print snippet.long_snippet
     print ','.join(snippet.reasons)
