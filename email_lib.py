@@ -26,8 +26,9 @@ class snippet:
         reasons: why is it a good sentence?
         filename: the file name it's saved as (optional, for debugging)
     """
-    def __init__(self, snippet, from_address, email_text, long_snippet, reasons):
+    def __init__(self, snippet, date, from_address, email_text, long_snippet, reasons):
         self.snippet = snippet
+        self.date = date
         self.from_address = from_address
         self.email_text = email_text
         self.long_snippet = long_snippet

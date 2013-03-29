@@ -142,7 +142,7 @@ def get_snippets(email):
                     reasons.append('all caps: ' + word)
         if sentence_good:
             long_snippet = build_long_snippet(sentences, index)
-            snippet = email_lib.snippet(sentence, email.from_address,\
+            snippet = email_lib.snippet(sentence, email.date, email.from_address,\
                 email.text, long_snippet, reasons)
             snippets.append(snippet)
             
@@ -166,6 +166,7 @@ else:
 
 for snippet in some_snippets:
     print snippet.filename
+    print str(snippet.date.date())
     print snippet.long_snippet
     print ','.join(snippet.reasons)
     print
