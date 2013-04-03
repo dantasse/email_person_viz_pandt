@@ -35,11 +35,11 @@ e.g.
 
 8. Now the fun part! Run generate\_snippets.py. There are a lot of options to generate\_snippets.py, so just run generate\_snippets.py -h to see all the things you can do. Some examples:
 
-        ./generate_snippets.py me@me.com you@you.com -p (path to processed emails) --use_keyword --use_tfidf --use_all_caps
-will just find snippets in all the emails between me@me.com and you@you.com, using the "keyword", "tfidf word", and "all caps word" matching strategies. (that's all we've got as of 11/29/12) 
+        ./generate_snippets.py  -p (path to processed emails) me@me.com you@you.com
+will just find snippets in all the emails between me@me.com and you@you.com.
 
-        ./generate_snippets.py me@me.com you@you.com --start-date=2012-08-01 --end-date=2012-08-31 -p (path to processed emails) --use_keyword
-will find snippets in all the emails between these two addresses in August 2012, using "keyword" matching strategy.
+        ./generate_snippets.py --start-date=2012-08-01 --end-date=2012-08-31 -p (path to processed emails) me@me.com you1@you.com you2@you.com
+will find snippets in all the emails between me@me.com and you1@you.com, or between me@me.com and you2@you.com, in August 2012
 
 ### Snippet finding rules:
 
@@ -72,8 +72,4 @@ top\_emailers.py: lets you find the people you email with most frequently.
 ### Credits:
 english.pickle is the English sentence segmenter from Punkt, included in NLTK,
 which is amazing. More info: <http://nltk.org/>
-
-### TODO next:
-2. generate images programmatically?
-3. Make process_mail a little faster I guess
 
