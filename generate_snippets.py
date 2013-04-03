@@ -81,10 +81,10 @@ if args.use_tfidf:
     for top_emailer in args.top_emailers:
         tfidf_words[top_emailer] = [word_score[0] for word_score in\
             tfidf.get_unusual_words(args.emails_path, args.me, top_emailer)[0:12]]
-        print 'Unusual words with ' + top_emailer
-        for word in tfidf_words[top_emailer]:
-            print word
-        print 
+        # print 'Unusual words with ' + top_emailer
+        # for word in tfidf_words[top_emailer]:
+        #     print word
+        # print 
 
 # build it out until it's approx snippet_chars length
 # |sentences| = all sentences in the email, |index| = index of matching word
@@ -177,7 +177,10 @@ def get_snippets_from_person(me, top_emailer):
 if __name__ == '__main__':
     all_snippets = []
     for top_emailer in args.top_emailers:
-        all_snippets.extend(get_snippets_from_person(args.me, top_emailer))
+        snippets_from_person = get_snippets_from_person(args.me, top_emailer)
+        if len(snippets_from_person) < args.num_snippets:
+            print 'Warning: only %d snippets from %s' % (len(snippets_from_person), top_emailer)
+        all_snippets.extend(snippets_from_person)
 
     random.shuffle(all_snippets)
     for snippet in all_snippets:
