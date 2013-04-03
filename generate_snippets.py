@@ -34,12 +34,12 @@ parser.add_argument('-n', '--num_snippets', type=int, default=1,
     help='the number of snippets to get')
 parser.add_argument('--snippet_chars', type=int, default=400,
     help='the approximate number of characters in each snippet')
-parser.add_argument('--use_keyword', action='store_true',
+parser.add_argument('--use_keyword', default=True,
     help='if set, use keyword matching (like "love") to find snippets')
-parser.add_argument('--use_tfidf', action='store_true',
+parser.add_argument('--use_tfidf', default=True,
     help='if set, use TF-IDF algorithm to pick snippets based on words that ' +
          'you use with that person more than most people')
-parser.add_argument('--use_all_caps', action='store_true',
+parser.add_argument('--use_all_caps', default=True,
     help='if set, pick snippets that have a word in all caps.')
 
 args = parser.parse_args()
