@@ -21,15 +21,17 @@ class snippet:
         it is in.
         snippet = the "meaningful" sentence
         from_address: who wrote it
+        to_addresses: who it's to
         email_text: the full text of the email
         long_snippet: a longer (3 sentences) version of the "meaningful" snippet
         reasons: why is it a good sentence?
         filename: the file name it's saved as (optional, for debugging)
     """
-    def __init__(self, snippet, date, from_address, email_text, long_snippet, reasons):
+    def __init__(self, snippet, date, from_address, to_addresses, email_text, long_snippet, reasons):
         self.snippet = snippet
         self.date = date
         self.from_address = from_address
+        self.to_addresses = to_addresses
         self.email_text = email_text
         self.long_snippet = long_snippet
         self.reasons = reasons

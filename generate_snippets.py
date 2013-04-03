@@ -17,8 +17,9 @@ parser = argparse.ArgumentParser(description='Display some "meaningful"\
  
 parser.add_argument('me',
     help='your email address')
-parser.add_argument('person',
-    help='the email address of the person you want to get snippets from')
+parser.add_argument('top_emailers',
+    help='the email address of the person you want to get snippets from',
+    nargs='*')
 parser.add_argument('--start_date',
     default='0001-01-01',
     help='the start date (inclusive) of the range you want to search, in\
@@ -28,10 +29,9 @@ parser.add_argument('--end_date',
     help='the end date (inclusive) of the range you want to search, in format\
           YYYY-MM-DD')
 parser.add_argument('-p', '--emails_path',
-    default='/Users/dtasse/Desktop/processed_emails/',
     help='the path to the directory with all the emails')
-parser.add_argument('-n', '--num_snippets', type=int, default=1,
-    help='the number of snippets to get')
+parser.add_argument('-n', '--num_snippets', type=int, default=3,
+    help='the number of snippets to get (per top emailer)')
 parser.add_argument('--snippet_chars', type=int, default=400,
     help='the approximate number of characters in each snippet')
 parser.add_argument('--use_keyword', default=True,
@@ -56,10 +56,11 @@ end_date = datetime.datetime.strptime(args.end_date, email_lib.DATE_FORMAT)\
 # first second of May 3.
 
 # Returns whether the email should even be considered as a possible candidate
-def is_email_valid(email):
+# (if it is between the right people, and if the date is okay)
+def is_email_valid(email, me, top_emailer):
     is_right_people =\
-        (args.person == email.from_address and args.me in email.to_addresses) or\
-        (args.person in email.to_addresses and args.me == email.from_address)
+        (top_emailer == email.from_address and me in email.to_addresses) or\
+        (top_emailer in email.to_addresses and me == email.from_address)
     # TODO Off by ~5 hrs due to timezones. Don't care for now, but would
     # be nice to fix someday.
     is_date_okay = email.date >= start_date and email.date <= end_date
@@ -75,11 +76,15 @@ sentence_segmenter = pickle.Unpickler(segmenter_file).load()
 # sentence_segmenter = nltk.data.load('tokenizers/punkt/english.pickle')
 
 
+tfidf_words={}
 if args.use_tfidf:
-    tfidf_words = [word_score[0] for word_score in\
-        tfidf.get_unusual_words(args.emails_path, args.me, args.person)[0:12]]
-    for word in tfidf_words:
-        print word
+    for top_emailer in args.top_emailers:
+        tfidf_words[top_emailer] = [word_score[0] for word_score in\
+            tfidf.get_unusual_words(args.emails_path, args.me, top_emailer)[0:12]]
+        print 'Unusual words with ' + top_emailer
+        for word in tfidf_words[top_emailer]:
+            print word
+        print 
 
 # build it out until it's approx snippet_chars length
 # |sentences| = all sentences in the email, |index| = index of matching word
@@ -114,7 +119,9 @@ def remove_links(text):
 key_words = [':)', ':-)', 'lol', 'love', 'i feel', 'xoxo', 'haha']
 # Returns a list of snippets, as defined in email_lib (a "snippet" is a
 # potentially-meaningful sentence).
-def get_snippets(email):
+# You have to tell it who the email is with, so that it knows the right
+# TFIDF (statistically unlikely) words for that person.
+def get_snippets(email, top_emailer):
     snippets = []
     text_no_newlines = remove_trn(email.text)
     text_no_links = remove_links(text_no_newlines)
@@ -128,7 +135,7 @@ def get_snippets(email):
                     sentence_good = True
                     reasons.append('key word: ' + key_word)
         if args.use_tfidf:
-            for tfidf_word in tfidf_words:
+            for tfidf_word in tfidf_words[top_emailer]:
                 if tfidf_word in [word.strip(string.punctuation) for word in\
                     sentence.lower().split()[0:-1]]:
                     sentence_good = True
@@ -143,33 +150,44 @@ def get_snippets(email):
         if sentence_good:
             long_snippet = build_long_snippet(sentences, index)
             snippet = email_lib.snippet(sentence, email.date, email.from_address,\
-                email.text, long_snippet, reasons)
+                email.to_addresses, email.text, long_snippet, reasons)
             snippets.append(snippet)
             
     return snippets
  
-all_snippets = []
-for filename in os.listdir(args.emails_path):
-    e1 = email_lib.read_email(args.emails_path + filename)
-    if is_email_valid(e1):
-        for snippet in get_snippets(e1):
-            snippet.filename = filename
-            all_snippets.append(snippet)
+# returns N snippets from a particular top_emailer
+def get_snippets_from_person(me, top_emailer):
+    all_snippets_from_person = []
+    for filename in os.listdir(args.emails_path):
+        e1 = email_lib.read_email(args.emails_path + filename)
+        if is_email_valid(e1, me, top_emailer):
+            for snippet in get_snippets(e1, top_emailer):
+                snippet.filename = filename
+                all_snippets_from_person.append(snippet)
 
-# Randomly select N snippets
-random.shuffle(all_snippets)
-if args.num_snippets <= len(all_snippets):
-    some_snippets = all_snippets[0:args.num_snippets]
-else:
-    print "Not enough snippets."
-    some_snippets = all_snippets
+    # Randomly select N snippets
+    random.shuffle(all_snippets_from_person)
+    if args.num_snippets <= len(all_snippets_from_person):
+        some_snippets = all_snippets_from_person[0:args.num_snippets]
+    else:
+        print "Not enough snippets."
+        some_snippets = all_snippets_from_person
+    return some_snippets
 
-for snippet in some_snippets:
-    print snippet.filename
-    print str(snippet.date.date())
-    print snippet.long_snippet
-    print ','.join(snippet.reasons)
-    print
+if __name__ == '__main__':
+    all_snippets = []
+    for top_emailer in args.top_emailers:
+        all_snippets.extend(get_snippets_from_person(args.me, top_emailer))
 
-if len(all_snippets) == 0:
-    print "No snippets." 
+    random.shuffle(all_snippets)
+    for snippet in all_snippets:
+        print snippet.filename
+        print 'From: ' + str(snippet.from_address)
+        print 'To: ' + str(snippet.to_addresses)
+        print str(snippet.date.date())
+        print snippet.long_snippet
+        print ','.join(snippet.reasons)
+        print
+
+    if len(all_snippets) == 0:
+        print "No snippets." 
