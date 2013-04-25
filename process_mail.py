@@ -54,7 +54,7 @@ def process_email(filename):
         msg = email.message_from_string(contents)
         
         from_str = remove_trn(msg['From'] or '')
-        from_addr = email.utils.parseaddr(from_str)[1]
+        from_addr = email.utils.parseaddr(from_str)[1].lower()
 
         # getaddresses returns a list of ("Dan Tasse", "dantasse@cmu.edu") tuples
         tos = msg.get_all('to', [])
