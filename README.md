@@ -33,21 +33,21 @@ e.g.
  
         ./top_emailers.py dan@foo.com -n 50
 
-8. Now the fun part! Run generate\_snippets.py. There are a lot of options to generate\_snippets.py, so just run generate\_snippets.py -h to see all the things you can do. Some examples:
+8. Now the fun part! Run generate\_snippets.py. There are a lot of options to generate\_snippets.py, so just run generate\_snippets.py -h to see all the things you can do. Here is what you'll probably want to do:
 
-        ./generate_snippets.py  -p (path to processed emails) me@me.com you@you.com
-will just find snippets in all the emails between me@me.com and you@you.com.
+        ./generate_snippets.py  --end-date=(YYYY-MM-DD) -p (path to processed emails) (participant's email) (list of top emailers)
+So it will probably look like something like this:
 
-        ./generate_snippets.py --start-date=2012-08-01 --end-date=2012-08-31 -p (path to processed emails) me@me.com you1@you.com you2@you.com
-will find snippets in all the emails between me@me.com and you1@you.com, or between me@me.com and you2@you.com, in August 2012
+        ./generate_snippets.py --end-date=2012-04-29 -p /Users/dtasse/Desktop/p15_processed_emails/ participant@gmail.com top_emailer_1@gmail.com top_emailer2@hotmail.com top_emailer_three@aol.com
+and that will find snippets in all the emails between the participant and their top three emailers, before April 29, 2012. (adjust this to be 1 year before their interview)
 
 ### Snippet finding rules:
 
---use\_keyword: finds snippets that contain hard-coded key words. Examples: "love", "lol", ":)"
+keyword: finds snippets that contain hard-coded key words. Examples: "love", "lol", ":)". Turn it off by setting --use\_keyword=false.
 
---use\_tfidf: finds snippets that contain words that you use with this person more than with other people.
+tfidf: finds snippets that contain words that you use with this person more than with other people. Turn it off by setting --use\_tfidf=false.
 
---use\_all\_caps: finds snippets that contain words (at least 4 letters) that are in all-caps.
+all caps: finds snippets that contain words (at least 4 letters) that are in all-caps. Turn it off by setting --use\_all\_caps=false.
 
 ### Important files: 
 
