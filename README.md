@@ -35,10 +35,10 @@ e.g.
 
 8. Now the fun part! Run generate\_snippets.py. There are a lot of options to generate\_snippets.py, so just run generate\_snippets.py -h to see all the things you can do. Here is what you'll probably want to do:
 
-        ./generate_snippets.py  --end-date=(YYYY-MM-DD) -p (path to processed emails) (participant's email) (list of top emailers)
+        ./generate_snippets.py  --end_date=(YYYY-MM-DD) -p (path to processed emails) (participant's email) (list of top emailers)
 So it will probably look like something like this:
 
-        ./generate_snippets.py --end-date=2012-04-29 -p /Users/dtasse/Desktop/p15_processed_emails/ participant@gmail.com top_emailer_1@gmail.com top_emailer2@hotmail.com top_emailer_three@aol.com
+        ./generate_snippets.py --end_date=2012-04-29 -p /Users/dtasse/Desktop/p15_processed_emails/ participant@gmail.com top_emailer_1@gmail.com top_emailer2@hotmail.com top_emailer_three@aol.com
 and that will find snippets in all the emails between the participant and their top three emailers, before April 29, 2012. (adjust this to be 1 year before their interview)
 
 ### Snippet finding rules:
