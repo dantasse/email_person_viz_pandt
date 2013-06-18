@@ -1,25 +1,12 @@
-Code for a class project that aims to download all of our email and pull out
-some hopefully-meaningful statements.
+Code to download and somewhat parse your gmail archives.
 
 ## Instructions:
 1. Make sure you have python. Open a terminal and run:
 
         python --version
 If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff might still work, but this was written in 2.7.)
-2. Install NLTK (Natural Language Toolkit): Go to <http://pypi.python.org/pypi/nltk/2.0.4>, download the zip, unzip it to a folder. Navigate to that folder in a terminal, and run:
 
-        sudo python setup.py install
-(Or, if you use Pip, do:)
-
-        sudo pip install nltk
-
-4. Get all of the code for this project. Two options: First, you can run:
-
-        git clone https://github.com/dantasse/email_person_viz_pandt.git
-And then whenever you want to update the code (e.g. when we add more rules) you can just go to that same directory and then run:
- 
-        git pull
-And you'll be up to date. On the other hand, if you don't want to, or if you don't have git installed and don't want to install it, you can just do Option 2: download <https://github.com/dantasse/email_person_viz_pandt/archive/master.zip> and unzip it.
+4. Get all of the code for this project. Two options: First, you can clone this repo (see details around github help), or if you don't have git installed and don't want to install it, you can just do Option 2: go to the github page and unzip it.
 5. Navigate to the folder where you downloaded/cloned it, in a terminal.
 6. Run:
 
