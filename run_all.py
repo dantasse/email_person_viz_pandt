@@ -15,5 +15,3 @@ email_address = raw_input("Enter your email address: ")
 retval = call(['./get_mail.py', '--email_address=' + email_address])
 if retval == 0:
     retval = call(['./process_mail.py'])
-if retval == 0:
-    call(['./top_emailers.py', email_address])
