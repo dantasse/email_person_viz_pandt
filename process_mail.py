@@ -8,13 +8,14 @@ Date
 From address
 To addresses
 CC addresses 
-Message text (all the rest of the lines too)
+Subject
+Frequency of words in the message (as a python collections.Counter object)
 """
 #
 # Some details from:
 # https://yuji.wordpress.com/2011/06/22/python-imaplib-imap-example-with-gmail/
 
-import argparse, datetime, email, os, quopri, re, time
+import argparse, collections, datetime, email, os, quopri, re, time
 from multiprocessing import Pool, Value
 import email_lib
 
@@ -70,7 +71,7 @@ def process_email(filename):
             print "could not parse date in file: " + filename + ", skipping file."
             return
 
-        # TODO get the subject line
+        subject = msg['subject']
 
         text = get_first_text_block(msg)
         text = quopri.decodestring(str(text)) # fixes "=20" etc
@@ -85,13 +86,17 @@ def process_email(filename):
         text = text.replace('\xb36', '"')
         # text = re.sub('<.*?>', '', text) # Strip out everything in brackets
         text = re.sub('<http:.*>', '', text) # Strip out links
+        
+        # now we have the text, compute word frequencies
+        freqs = collections.Counter(text.split())
 
         outfile = open(args.output_path + filename, 'w')
         outfile.write(utc_date.strftime(email_lib.DATE_TIME_FORMAT) + '\n')
         outfile.write(from_addr + '\n')
         outfile.write(str(to_addrs) + '\n')
         outfile.write(str(cc_addrs) + '\n')
-        outfile.write(text)
+        outfile.write(subject + '\n')
+        outfile.write(str(freqs))
         outfile.close()
 
         global counter # sorry again
