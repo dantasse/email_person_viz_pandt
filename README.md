@@ -39,9 +39,3 @@ working with is a bit smaller.
 
 email\_lib.py: some functions that are called from other scripts.
 
-tfidf.py: functions to pull out "tf-idf" ("term-frequency inverse-document-frequency") words; that is, words that you use a lot with this person but not with other people.
-
-### Credits:
-english.pickle is the English sentence segmenter from Punkt, included in NLTK,
-which is amazing. More info: <http://nltk.org/>
-
