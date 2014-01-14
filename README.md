@@ -1,4 +1,4 @@
-Code for a class project that aims to download all of our email and pull out
+Code for Pastcards, a project that aims to download all your email and pull out
 some hopefully-meaningful statements.
 
 ## Instructions:
