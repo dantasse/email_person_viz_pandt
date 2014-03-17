@@ -19,7 +19,7 @@ If it comes back with 2.7 or higher, you're in good shape. (if it's lower, stuff
 And then whenever you want to update the code (e.g. when we add more rules) you can just go to that same directory and then run:
  
         git pull
-And you'll be up to date. On the other hand, if you don't want to, or if you don't have git installed and don't want to install it, you can just do Option 2: download <https://github.com/dantasse/email_person_viz_pandt/archive/master.zip> and unzip it.
+And you'll be up to date. On the other hand, if you don't want to, or if you don't have git installed and don't want to install it, you can just do Option 2: download <https://codeload.github.com/dantasse/email_person_viz_pandt/zip/master> and unzip it.
 5. Navigate to the folder where you downloaded/cloned it, in a terminal.
 6. Run:
 
